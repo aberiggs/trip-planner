@@ -1,15 +1,20 @@
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
+import { ThemedView } from "@/components/ThemedView";
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedButton } from '@/components/ThemedButton';
 
-export default function Index() {
+export default function Landing() {
   return (
-    <View
+    <ThemedView 
       style={{
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
+      <ThemedText>Welcome!</ThemedText>
+
+      <ThemedButton onPress={() => navigation.navigate('plans')}>Go To Home</ThemedButton>
+    </ThemedView>
   );
 }
