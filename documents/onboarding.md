@@ -11,7 +11,17 @@ This document will guide you through the necessary tools and the configuration p
 
 4. Download the AWS SAM CLI from the official website: [click here](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html).
 
-## Install & Configure Postman
+## Setup Postman
 
 1. Create an account on [Postman](https://www.postman.com/). We will use Postman for API testing.
 2. Contact me (@Willy) on Discord, and I will invite you to the workspace.
+
+## Setup MongoDB
+
+1. Create an account on [MongoDB](https://www.mongodb.com/). We will use MongoDB for our main databases.
+2. Contact me (@Willy) on Discord, and I will invite you to the organization.
+
+## Setup Figma
+
+1. Create an account on [Figma](https://www.figma.com). We will use Figma to design our frontend interface.
+2. Contact Sprocket (@sprocket) on Discord, and he will invite you to the team.
