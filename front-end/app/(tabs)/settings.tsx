@@ -1,4 +1,3 @@
-import { Text, View } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedButton } from '@/components/ThemedButton';
@@ -14,10 +13,9 @@ export default function Settings() {
       }}
     >
       <ThemedText>These are your settings.</ThemedText>
-      <Link href="/">
-        <ThemedButton><Text>Logout</Text></ThemedButton>
+      <Link replace href="/" asChild>
+        <ThemedButton><ThemedText type={"button"}>Logout</ThemedText></ThemedButton>
       </Link>
     </ThemedView>
   );
 }
-
