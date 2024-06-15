@@ -6,6 +6,7 @@ import { HelloWave } from "@/components/HelloWave";
 import { Link } from "expo-router";
 
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { ColorTypes } from "@/constants/Colors";
 
 export default function Landing() {
   return (
@@ -27,7 +28,7 @@ export default function Landing() {
         <Link replace href="/plans" asChild>
           <ThemedButton style={{flexDirection: "row", alignItems: "center", justifyContent: "space-around", gap: 10}}>
             <Ionicons size={28} name="logo-google"/>
-            <ThemedText type={"button"}>Log in with Google</ThemedText>
+            <ThemedText color={ColorTypes.background}>Log in with Google</ThemedText>
           </ThemedButton>
         </Link>
 

@@ -5,11 +5,11 @@
 
 import { useColorScheme } from 'react-native';
 
-import { Colors } from '@/constants/Colors';
-
+import { Colors, ColorTypes } from '@/constants/Colors';
+ 
 export function useThemeColor(
   props: { light?: string; dark?: string },
-  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
+  colorName: ColorTypes
 ) {
   const theme = useColorScheme() ?? 'light';
   const colorFromProps = props[theme];
@@ -20,3 +20,6 @@ export function useThemeColor(
     return Colors[theme][colorName];
   }
 }
+
+// Export the ColorTypes for anywhere that wants to use the color themes hook
+export { ColorTypes } from '@/constants/Colors';
