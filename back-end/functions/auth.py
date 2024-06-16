@@ -4,7 +4,6 @@ from google.auth.transport import requests
 import time
 import jwt
 from util.get_secret import get_secret
-from jwt import InvalidSignatureError
 
 SECRET_KEY = get_secret("auth", "jwt_secret_key")
 WEB_CLIENT_ID = get_secret("auth", "web_client_id")
