@@ -10,6 +10,9 @@ Parameters:
     Type: String
     Description: Name of our backend service
     Default: TripPlanner
+  FirebaseProjectId:
+    Type: String
+    Default: trip-planner-1b0e0
 
 Globals:
   Function:
@@ -25,11 +28,28 @@ Resources:
       Architectures:
         - x86_64
       Events:
-        HelloWorld:
+        HellowWorldAPI:
           Type: Api
           Properties:
+            RestApiId: !Ref MyRestApi
             Path: /hello
-            Method: get
+            Method: GET
+
+  AuthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/
+      Handler: auth.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Events:
+        AuthAPI:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyRestApi
+            Path: /auth
+            Method: POST
 
   CreateEventFunction:
     Type: AWS::Serverless::Function
@@ -42,11 +62,23 @@ Resources:
         - x86_64
       Role: !GetAtt CreateEventExecutionRole.Arn
       Events:
-        HelloWorld:
+        CreateEventAPI:
           Type: Api
           Properties:
+            RestApiId: !Ref MyRestApi
             Path: /create_event
-            Method: get
+            Method: POST
+
+  
+  MyRestApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Name: MyRestApi
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS,PATCH,DELETE'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
 
   CreateEventExecutionRole:
     Type: 'AWS::IAM::Role'
@@ -83,7 +115,6 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub '/aws/lambda/${ApplicationName}'
-
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

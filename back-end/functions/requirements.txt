@@ -1,1 +1,3 @@
 requests
+google-auth
+pyjwt

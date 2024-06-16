@@ -2,8 +2,7 @@ import boto3
 from botocore.exceptions import ClientError
 import json
 
-def get_secret(secret_key):
-    secret_name = "mongo-db-connection-secret"
+def get_secret(secret_name, secret_key):
     region_name = "us-east-1"
 
     session = boto3.session.Session()
