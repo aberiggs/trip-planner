@@ -24,7 +24,6 @@ const styles = StyleSheet.create({
 });
 
 interface User {
-  "user_id": string
   "email": string
   "picture": string
   "name": string

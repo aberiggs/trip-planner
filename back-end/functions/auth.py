@@ -8,6 +8,7 @@ from jwt import InvalidSignatureError
 
 SECRET_KEY = get_secret("auth", "jwt_secret_key")
 WEB_CLIENT_ID = get_secret("auth", "web_client_id")
+IOS_CLIENT_ID = get_secret("auth", "ios_client_id")
 
 def create_jwt_token(payload):
     current_time = int(time.time())
@@ -22,23 +23,19 @@ def create_jwt_token(payload):
 
     return token
 
-def is_jwt_token_valid(jwtToken):
-    try:
-        jwt.decode(jwtToken, key=SECRET_KEY, algorithms=["HS256"])
-        return True
-    except InvalidSignatureError:
-        return False
-
 
 def lambda_handler(event, context):
     body = json.loads(event["body"])
     idToken = body["idToken"]
+    client_type = body["client_type"]
 
     try:
-        idinfo = id_token.verify_oauth2_token(idToken, requests.Request(), WEB_CLIENT_ID)
+        if client_type == "web":
+            idinfo = id_token.verify_oauth2_token(idToken, requests.Request(), WEB_CLIENT_ID)
+        elif client_type == "ios":
+            idinfo = id_token.verify_oauth2_token(idToken, requests.Request(), IOS_CLIENT_ID)
 
         token_payload = {
-            "user_id": idinfo["sub"],
             "email": idinfo["email"],
             "picture": idinfo["picture"],
             "name": idinfo["name"]
