@@ -13,7 +13,7 @@ Parameters:
 
 Globals:
   Function:
-    Timeout: 10
+    Timeout: 3
 
 Resources:
   HelloWorldFunction:
@@ -42,11 +42,12 @@ Resources:
         - x86_64
       Role: !GetAtt CreateEventExecutionRole.Arn
       Events:
-        HelloWorld:
+        CreateEvent:
           Type: Api
           Properties:
             Path: /create_event
-            Method: get
+            Method: post
+
 
   CreateEventExecutionRole:
     Type: 'AWS::IAM::Role'
