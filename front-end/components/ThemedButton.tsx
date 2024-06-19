@@ -11,7 +11,7 @@ export type ThemedPressableProps = PressableProps & {
 };
 
 // Imp = Implementation
-function ThemedButtonImp({ forwardedRef, style, lightColor, darkColor, color = ColorTypes.text, ...otherProps }: ThemedPressableProps) {
+function ThemedButtonImp({ forwardedRef, style, lightColor, darkColor, color = ColorTypes.primary, ...otherProps }: ThemedPressableProps) {
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, color);
 
   // style is either a ViewStyle or a function that returns a ViewStyle :)

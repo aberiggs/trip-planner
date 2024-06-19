@@ -7,29 +7,23 @@ const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
 export enum ColorTypes {
-  text = "text",
-  background = "background",
-  tint = "tint",
-  icon = "icon",
-  tabIconDefault = "tabIconDefault",
-  tabIconSelected = "tabIconSelected",
+  base = "base",            // Base color - "background color"
+  primary = "primary",
+  secondary = "secondary",
+  transparent = "transparent",
 };
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    base: '#fff',
+    primary: '#11181C',
+    secondary: '#0a7ea4',
   },
   dark: {
-    text: '#D4D4D8',
-    background: '#18181B',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    base: '#16161d',
+    // #4A4E69
+    // #9A8C98
+    primary: '#F2E9E4',
+    secondary: '#C9ADA7',
   },
 };

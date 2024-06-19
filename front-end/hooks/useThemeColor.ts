@@ -14,6 +14,10 @@ export function useThemeColor(
   const theme = useColorScheme() ?? 'light';
   const colorFromProps = props[theme];
 
+  if (colorName === 'transparent') {
+    return 'transparent';
+  }
+
   if (colorFromProps) {
     return colorFromProps;
   } else {

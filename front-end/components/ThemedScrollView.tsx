@@ -8,7 +8,7 @@ export type ThemedScrollViewProps = ScrollViewProps & {
   color: ColorTypes;
 };
 
-export function ThemedScrollView({ style, lightColor, darkColor, color = ColorTypes.background, ...otherProps }: ThemedScrollViewProps) {
+export function ThemedScrollView({ style, lightColor, darkColor, color = ColorTypes.base, ...otherProps }: ThemedScrollViewProps) {
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, color);
 
   return <ScrollView style={[{ backgroundColor }, style]} {...otherProps} />;

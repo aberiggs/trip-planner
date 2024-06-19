@@ -14,7 +14,7 @@ export function ThemedText({
   lightColor,
   darkColor,
   type = 'default',
-  color = ColorTypes.text,
+  color = ColorTypes.primary,
   ...rest
 }: ThemedTextProps) {
   const textColor = useThemeColor({ light: lightColor, dark: darkColor }, color);
@@ -52,10 +52,5 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  link: {
-    lineHeight: 30,
-    fontSize: 16,
-    color: '#0a7ea4',
   },
 });
