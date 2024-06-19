@@ -8,7 +8,7 @@ copy_to_requirement() {
 }
 
 run_test() {
-    poetry run pytest -s tests/unit/src/planner
+    poetry run pytest -s tests/unit
     if [ $? -ne 0 ]; then
         exit 1
     fi

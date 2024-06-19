@@ -1,6 +1,6 @@
 import time
 import jwt
-from planner.util.get_secret import get_secret
+from src.planner.util.get_secret import get_secret
 
 SECRET_KEY = get_secret("auth", "jwt_secret_key")
 
