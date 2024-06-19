@@ -19,27 +19,11 @@ Globals:
     Timeout: 3
 
 Resources:
-  HelloWorldFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: functions/
-      Handler: hello_world.lambda_handler
-      Runtime: python3.12
-      Architectures:
-        - x86_64
-      Events:
-        HellowWorldAPI:
-          Type: Api
-          Properties:
-            RestApiId: !Ref MyRestApi
-            Path: /hello
-            Method: GET
-
   AuthFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: 'AuthFunction'
-      CodeUri: functions/
+      CodeUri: src/
       Handler: auth.lambda_handler
       Runtime: python3.12
       Architectures:
@@ -57,7 +41,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: TestAuthFunction
-      CodeUri: functions/
+      CodeUri: src/
       Handler: test_auth.lambda_handler
       Runtime: python3.12
       Architectures:
@@ -75,7 +59,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: 'CreateEventFunction'
-      CodeUri: functions/
+      CodeUri: src/
       Handler: create_event.lambda_handler
       Runtime: python3.12
       Architectures:

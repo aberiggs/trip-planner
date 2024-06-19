@@ -1,4 +1,0 @@
-requests
-pymongo
-google-auth
-pyjwt

@@ -12,7 +12,8 @@ Sign in or sign up the passed in user.
 
 ```json
 {
-    "idToken": "[idToken returned by Google Login]"
+    "idToken": "[idToken returned by Google Login]",
+    "client_type": "web" or "ios"
 }
 ```
 
@@ -20,7 +21,8 @@ Sign in or sign up the passed in user.
 
 ```json
 {
-    "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+    "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+    "client_type": "web"
 }
 ```
 
@@ -67,3 +69,14 @@ This JWT token can be decoded into the following fields:
     "message": "invalid token"
 }
 ```
+
+**Condition** : If the required fields are missing in body
+
+**Code** : `400 Bad Request`
+
+**Content** :
+
+```json
+{
+    "message": "The following fields are missing in body: [missing fields]"
+}
