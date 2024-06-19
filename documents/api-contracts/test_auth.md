@@ -50,3 +50,15 @@ Header:
     "message": "you are not logged in"
 }
 ```
+
+**Condition** : No `Authorization` is presented in the header.
+
+**Code** : `400 Bad Request`
+
+**Content** :
+
+```json
+{
+    "message": "The following fields are missing in header: Authorization"
+}
+```

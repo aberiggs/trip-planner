@@ -1,19 +1,29 @@
 # back-end
 
-Run lambda functions locally
+## Commands
+If profile is not set, it will use the `default` profile
+### Run project locally
+This command will also build as well as run through all test cases.
 ```bash
-sam build
-sam local start-api --profile [your profile name]
+./build.sh -p [your profile name] start
 ```
 
-Deploy sam model
+### Test project 
+This command will also build.
 ```bash
-sam build
-sam deploy
+./build.sh -p [your profile name] start
 ```
 
-Package management: poetry
-[Good resource on what poetry is](https://chariotsolutions.com/blog/post/building-lambdas-with-poetry/)
+###  Deploy to AWS 
+This command will also build as well as run through all test cases.
+```bash
+./build.sh -p [your profile name] deploy
+```
+
+### Poetry
+
+Package management: poetry <br>
+[Good resource on what poetry is.](https://chariotsolutions.com/blog/post/building-lambdas-with-poetry/)
 
 Install package
 ```bash
