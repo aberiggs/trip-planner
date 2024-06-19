@@ -1,5 +1,4 @@
 import boto3
-from botocore.exceptions import ClientError
 import json
 
 def get_secret(secret_name, secret_key):
@@ -11,15 +10,12 @@ def get_secret(secret_name, secret_key):
         region_name=region_name
     )
 
-    try:
-        get_secret_value_response = client.get_secret_value(
-            SecretId=secret_name
-        )
-        get_secret_value_response = json.loads(get_secret_value_response['SecretString'])
-    except ClientError as e:
-        raise e
-    
+    get_secret_value_response = client.get_secret_value(
+        SecretId=secret_name
+    )
+    get_secret_value_response = json.loads(get_secret_value_response['SecretString'])
+
     if secret_key not in get_secret_value_response:
-        return "secret_key doesn't exist"
+        raise ValueError(f"{secret_key} does not exist")
 
     return get_secret_value_response[secret_key]
