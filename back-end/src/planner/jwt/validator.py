@@ -4,10 +4,10 @@ from datetime import datetime, timezone
 
 SECRET_KEY = get_secret("auth", "jwt_secret_key")
 
-def jwt_validator(jwtToken):
+def jwt_validator(jwt_token):
 
     try:
-        jwt.decode(jwtToken, key=SECRET_KEY, algorithms=["HS256"])
+        jwt.decode(jwt_token, key=SECRET_KEY, algorithms=["HS256"])
         header = jwt.get_unverified_header(jwtToken)
 
         if 'exp' not in header:
