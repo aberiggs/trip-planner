@@ -25,9 +25,9 @@ const styles = StyleSheet.create({
 });
 
 interface User {
-  "email": string
-  "picture": string
-  "name": string
+  email: string;
+  picture: string;
+  name: string;
 }
 
 interface JwtHeader {
@@ -60,7 +60,7 @@ export default function Index() {
           {
             method: "POST",
             body: JSON.stringify({
-              idToken: fullResult.params.id_token,
+              id_token: fullResult.params.id_token,
               client_type: "ios",
             }),
             headers: {
