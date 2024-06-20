@@ -8,7 +8,7 @@ def jwt_validator(jwt_token):
 
     try:
         jwt.decode(jwt_token, key=SECRET_KEY, algorithms=["HS256"])
-        header = jwt.get_unverified_header(jwtToken)
+        header = jwt.get_unverified_header(jwt_token)
 
         if 'exp' not in header:
             return False
