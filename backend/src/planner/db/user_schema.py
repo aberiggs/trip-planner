@@ -1,12 +1,13 @@
 """Module providing function to enforce the user schema"""
 
+
 def enforce_user_schema(db):
     """Function that enforces user schema in mongodb"""
 
     schema_validator = {
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["first_name", "last_name", "last_visited", "email", "plans"],
+            "required": ["first_name", "last_name", "last_visited", "email"],
             "properties": {
                 "first_name": {
                     "bsonType": "string",
@@ -17,6 +18,9 @@ def enforce_user_schema(db):
                 "last_visited": {
                     "bsonType": "date",
                 },
+                "picture": {
+                    "bsonType": "string",
+                },
                 "email": {
                     "bsonType": "string",
                 },
@@ -26,7 +30,7 @@ def enforce_user_schema(db):
                         "bsonType": "objectId",
                     },
                 },
-            }
+            },
         }
     }
 

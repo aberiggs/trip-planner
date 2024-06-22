@@ -21,7 +21,7 @@ def jwt_validator(jwt_token):
         now = datetime.now(timezone.utc)
 
         if now > exp:
-            print("Token expired")
+            print("[error] Token expired")
             return False
 
         return True
