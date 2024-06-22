@@ -7,10 +7,17 @@ from planner.util.get_secret import get_secret
 from planner.http.validator import post_body_validator
 from planner.http.response import response_handler
 from planner.jwt.create_jwt_token import create_jwt_token
+from planner.model.user import enforce_user_schema
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
 WEB_CLIENT_ID = get_secret("auth", "web_client_id")
 IOS_CLIENT_ID = get_secret("auth", "ios_client_id")
 
+mongo_db_connect_url = get_secret("mongo_db_connect_url")
+client = MongoClient(mongo_db_connect_url, server_api=ServerApi("1"))
+db = client.trip_planner
+enforce_user_schema(db)
 
 def lambda_handler(event, context):
     """Lambda handler that sign in or up the user"""
@@ -37,6 +44,8 @@ def lambda_handler(event, context):
             )
         else:
             raise ValueError
+
+        print(id_info)
 
         token_payload = {
             "email": id_info["email"],
