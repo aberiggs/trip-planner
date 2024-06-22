@@ -19,7 +19,6 @@ confirm_changeset = true
 resolve_s3 = true
 s3_prefix = "back-end"
 region = "us-east-1"
-profile = "willytripplanner"
 image_repositories = []
 
 [default.package.parameters]
