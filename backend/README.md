@@ -34,3 +34,9 @@ Auto reformat
 ```bash
 black --target-version=py35 . --line-length 80
 ```
+
+Manually trigger precommit
+```bash
+poetry shell
+pre-commit run --all-files
+```

@@ -10,9 +10,6 @@ Parameters:
     Type: String
     Description: Name of our backend service
     Default: TripPlanner
-  FirebaseProjectId:
-    Type: String
-    Default: trip-planner-1b0e0
 
 Globals:
   Function:
