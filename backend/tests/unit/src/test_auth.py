@@ -5,6 +5,7 @@ from unittest import TestCase
 from unittest.mock import patch
 from planner.http.response import response_handler
 
+
 class TestAuth(TestCase):
     """Class containing all unit tests for auth"""
 

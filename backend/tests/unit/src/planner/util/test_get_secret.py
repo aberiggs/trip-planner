@@ -38,14 +38,14 @@ class TestValidator(TestCase):
 
     def test_get_secret_name_not_exit(self):
         """Function that tests whether get_secret raise an error when the secret
-         name doesn't exist in AWS"""
+        name doesn't exist in AWS"""
 
         with pytest.raises(ClientError):
             get_secret("fake name", self.secret_key)
 
     def test_get_secret_key_not_exist(self):
         """Function that tests whether get_secret raise an error when the secret
-         key doesn't exist in AWS"""
+        key doesn't exist in AWS"""
 
         with pytest.raises(ValueError):
             get_secret(self.secret_name, "fake key")

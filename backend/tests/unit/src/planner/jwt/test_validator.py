@@ -5,6 +5,7 @@ from unittest import TestCase
 from unittest.mock import patch
 import jwt
 
+
 class TestValidator(TestCase):
     """Class containing all unit tests for jwt validator"""
 
@@ -42,7 +43,7 @@ class TestValidator(TestCase):
 
     def test_jwt_validator_signed_with_same_secret(self) -> None:
         """Function that tests whether jwt validator returns true when token is
-         signed with the same key"""
+        signed with the same key"""
 
         from planner.jwt.validator import jwt_validator
 

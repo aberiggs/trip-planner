@@ -21,6 +21,14 @@ run_test() {
     fi
 }
 
+run_format() {
+    poetry run black --target-version=py35 . --line-length 80
+    poetry run pre-commit run --all-files
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
+}
+
 run_build() {
     poetry run sam build --use-container
     if [ $? -ne 0 ]; then
@@ -82,6 +90,10 @@ case $ACTION in
         run_build
         run_local
         ;;
+    format)
+        echo "Formatting..."
+        run_format
+        ;;
     test)
         echo "Testing project..."
         run_test
@@ -89,12 +101,14 @@ case $ACTION in
     build)
         echo "Building the project..."
         copy_to_requirement
+        run_format
         run_test
         run_build
         ;;
     deploy)
         echo "Building and deploying the project..."
         copy_to_requirement
+        run_format
         run_test
         run_build
         run_deploy
@@ -105,4 +119,3 @@ case $ACTION in
         exit 1
         ;;
 esac
-done

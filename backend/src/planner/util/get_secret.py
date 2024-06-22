@@ -3,6 +3,7 @@
 import json
 import boto3
 
+
 def get_secret(secret_name, secret_key):
     """Function that retrieves secret from AWS Secrets Manager"""
 

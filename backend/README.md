@@ -1,42 +1,50 @@
-# back-end
+# Backend
+
+## Overview
+This project uses a build script (build.sh) to manage various tasks such as building, testing, formatting code, and deploying to AWS. If no profile is specified, the default profile will be used.
 
 ## Commands
-If profile is not set, it will use the `default` profile
-### Run project locally
-This command will also build as well as run through all test cases.
+
+### Run Project Locally
+This command builds the project, runs all test cases, and starts the project locally.
+
 ```bash
 ./build.sh -p [your profile name] start
 ```
 
-### Test project
-This command will also build.
+### Format Code
+This command reformats the code.
+
 ```bash
-./build.sh -p [your profile name] start
+./build.sh -p [your profile name] format
 ```
 
-###  Deploy to AWS
-This command will also build as well as run through all test cases.
+### Test Project
+This command builds the project and runs all test cases.
+
+```bash
+./build.sh -p [your profile name] test
+```
+
+### Deploy to AWS
+This command builds the project, formats the code, runs all test cases, and deploys the project to AWS.
+
 ```bash
 ./build.sh -p [your profile name] deploy
 ```
 
-### Poetry
+## Package Management
 
-Package management: poetry <br>
-[Good resource on what poetry is.](https://chariotsolutions.com/blog/post/building-lambdas-with-poetry/)
+### Install Packages
+Use the following command to install dependencies.
 
-Install package
 ```bash
 poetry add [package name]
 ```
 
-Auto reformat
-```bash
-black --target-version=py35 . --line-length 80
-```
+### Install Dev Dependencies
+Use the following command to install development dependencies.
 
-Manually trigger precommit
 ```bash
-poetry shell
-pre-commit run --all-files
+poetry add [package name] --dev
 ```
