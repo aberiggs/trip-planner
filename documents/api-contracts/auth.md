@@ -41,7 +41,7 @@ Sign in or sign up the passed in user.
 This JWT token can be decoded into the following fields:
 
 ```json
-# header 
+# header
 {
   "alg": "HS256",
   "exp": "[expiration date in Unix epoch time]",
