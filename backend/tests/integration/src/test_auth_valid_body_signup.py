@@ -2,6 +2,7 @@
 
 import json
 import datetime
+from http import HTTPStatus
 from unittest.mock import patch
 from planner.http.response import response_handler
 import pytest
@@ -122,4 +123,6 @@ def test_auth_valid_body_signup(
     new_user.pop("_id")
 
     assert new_user == user_info
-    assert lambda_response == response_handler(200, {"jwt": jwt_token})
+    assert lambda_response == response_handler(
+        HTTPStatus.OK, {"jwt": jwt_token}
+    )

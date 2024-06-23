@@ -1,6 +1,7 @@
 """Module providing the handler for password sign up endpoint"""
 
 import json
+from http import HTTPStatus
 from planner.http.validator import post_body_validator
 from planner.http.response import response_handler
 from planner.http.error import INVALID_BODY, EMAIL_USED
@@ -71,4 +72,4 @@ def lambda_handler(event, context):
     }
 
     jwt_token = create_jwt_token(token_payload)
-    return response_handler(200, {"jwt": jwt_token})
+    return response_handler(HTTPStatus.OK, {"jwt": jwt_token})

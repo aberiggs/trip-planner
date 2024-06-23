@@ -3,6 +3,7 @@
 import json
 import datetime
 from datetime import timedelta
+from http import HTTPStatus
 from unittest.mock import patch
 from planner.http.response import response_handler
 import pytest
@@ -133,4 +134,6 @@ def test_auth_valid_body_signup(
     assert updated_user["last_visited"] == (
         utc_now + timedelta(hours=1)
     ).replace(tzinfo=None)
-    assert lambda_response == response_handler(200, {"jwt": jwt_token})
+    assert lambda_response == response_handler(
+        HTTPStatus.OK, {"jwt": jwt_token}
+    )

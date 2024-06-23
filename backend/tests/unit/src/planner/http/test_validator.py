@@ -2,6 +2,7 @@
 
 import json
 from unittest import TestCase
+from http import HTTPStatus
 from planner.http.validator import header_validator, post_body_validator
 from planner.http.response import response_handler
 
@@ -19,7 +20,7 @@ class TestValidator(TestCase):
 
         event = {"headers": {"Content-Type": "application/json"}}
         assert header_validator(event, expected_keys) == response_handler(
-            400,
+            HTTPStatus.BAD_REQUEST,
             {
                 "message": "The following fields are missing in header: Authentication"
             },
@@ -37,7 +38,7 @@ class TestValidator(TestCase):
         )
 
         assert header_validator(event, expected_keys) == response_handler(
-            400,
+            HTTPStatus.BAD_REQUEST,
             {
                 "message": f"The following fields are missing in header: {missing_keys}"
             },
@@ -64,7 +65,8 @@ class TestValidator(TestCase):
             ),
         }
         assert post_body_validator(event, expected_keys) == response_handler(
-            400, {"message": "The following fields are missing in body: addr"}
+            HTTPStatus.BAD_REQUEST,
+            {"message": "The following fields are missing in body: addr"},
         )
 
     def test_post_body_validator_missing_keys(self) -> None:
@@ -84,7 +86,7 @@ class TestValidator(TestCase):
         missing_keys = ", ".join(sorted(list(["email", "addr"])))
 
         assert post_body_validator(event, expected_keys) == response_handler(
-            400,
+            HTTPStatus.BAD_REQUEST,
             {
                 "message": f"The following fields are missing in body: {missing_keys}"
             },

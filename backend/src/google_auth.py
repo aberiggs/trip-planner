@@ -1,6 +1,7 @@
 """Module providing the handler for google authentication (sign in/up) endpoint"""
 
 import json
+from http import HTTPStatus
 from google.auth.transport import requests
 from planner.util.get_secret import get_secret
 from planner.http.validator import post_body_validator
@@ -108,4 +109,4 @@ def lambda_handler(event, context):
     }
 
     jwt_token = create_jwt_token(token_payload)
-    return response_handler(200, {"jwt": jwt_token})
+    return response_handler(HTTPStatus.OK, {"jwt": jwt_token})
