@@ -21,7 +21,7 @@ Sign in or sign up the passed in user.
 
 ```json
 {
-    "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+    "id_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
     "client_type": "web"
 }
 ```
@@ -58,7 +58,7 @@ This JWT token can be decoded into the following fields:
 
 ## Error Response
 
-**Condition** : If the passed in `idToken` is invalid.
+**Condition** : If the passed in `id_token` is invalid.
 
 **Code** : `401 Unauthorized`
 
@@ -66,7 +66,31 @@ This JWT token can be decoded into the following fields:
 
 ```json
 {
-    "message": "invalid token"
+    "message": "invalid id_token"
+}
+```
+
+**Condition** : If the passed in `client_type` is invalid.
+
+**Code** : `401 Unauthorized`
+
+**Content** :
+
+```json
+{
+    "message": "invalid client_type"
+}
+```
+
+**Condition** : If the passed in request body is an invalid JSON.
+
+**Code** : `400 Bad Request`
+
+**Content** :
+
+```json
+{
+    "message": "request body is an invalid JSON"
 }
 ```
 
