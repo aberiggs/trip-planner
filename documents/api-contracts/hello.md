@@ -34,9 +34,9 @@ Says hello world!
 
 ## Error Response
 
-**Condition** : 
+**Condition** :
 
-**Code** : 
+**Code** :
 
 **Content** :
 
