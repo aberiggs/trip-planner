@@ -3,7 +3,11 @@
 import json
 import datetime
 from unittest.mock import patch
-from planner.http.error import INVALID_CLIENT_TYPE, INVALID_GOOGLE_ID_TOKEN, INVALID_BODY
+from planner.http.error import (
+    INVALID_CLIENT_TYPE,
+    INVALID_GOOGLE_ID_TOKEN,
+    INVALID_BODY,
+)
 import pytest
 
 utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0)
@@ -168,6 +172,7 @@ def test_auth_invalid_id_token(
     )
     assert lambda_response == INVALID_GOOGLE_ID_TOKEN
 
+
 def test_auth_invalid_request_body(
     patch_get_utc_now,
     patch_db_setup,
@@ -184,7 +189,7 @@ def test_auth_invalid_request_body(
     event = {
         "headers": {"Content-Type": "application/json"},
         # this body is missing a double quote
-        "body": "{\"id_token: \"mock token\", \"client_type\": \"web\"}",
+        "body": '{"id_token: "mock token", "client_type": "web"}',
     }
 
     user_query = {"email": mock_id_info["email"]}

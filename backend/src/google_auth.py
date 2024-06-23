@@ -1,4 +1,4 @@
-"""Module providing the handler for authentication (sign in/up) endpoint"""
+"""Module providing the handler for google authentication (sign in/up) endpoint"""
 
 import json
 from google.auth.transport import requests
@@ -19,7 +19,7 @@ IOS_CLIENT_ID = get_secret("auth", "ios_client_id")
 
 
 def db_setup():
-    """Function thaht sets up mongodb client, session, schema enforcement"""
+    """Function that sets up mongodb client, session, schema enforcement"""
     client, session = db_init()
     db = client.trip_planner
     create_collection(db, "users")
@@ -28,7 +28,7 @@ def db_setup():
 
 
 def lambda_handler(event, context):
-    """Lambda handler that sign in or up the user"""
+    """Lambda handler that signs in or up the user through Google"""
 
     from google.oauth2.id_token import verify_oauth2_token
     from planner.jwt.create_jwt_token import create_jwt_token
@@ -81,6 +81,7 @@ def lambda_handler(event, context):
             "picture": picture,
             "email": email,
             "last_visited": utc_now,
+            "google_login": True,
             "plans": [],
         }
         db.users.insert_one(user, session=session)

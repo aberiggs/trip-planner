@@ -7,7 +7,13 @@ def enforce_user_schema(db):
     schema_validator = {
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["first_name", "last_name", "last_visited", "email"],
+            "required": [
+                "first_name",
+                "last_name",
+                "last_visited",
+                "email",
+                "google_login",
+            ],
             "properties": {
                 "first_name": {
                     "bsonType": "string",
@@ -23,6 +29,12 @@ def enforce_user_schema(db):
                 },
                 "email": {
                     "bsonType": "string",
+                },
+                "password": {
+                    "bsonType": "binData",
+                },
+                "google_login": {
+                    "bsonType": "bool",
                 },
                 "plans": {
                     "bsonType": "array",
