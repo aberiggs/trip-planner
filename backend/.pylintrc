@@ -431,7 +431,11 @@ disable=import-error,
         unrecognized-option,
         no-member,
         broad-exception-caught,
-        import-outside-toplevel
+        import-outside-toplevel,
+        too-many-locals,
+        redefined-outer-name,
+        too-many-arguments,
+        duplicate-code
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

@@ -15,7 +15,7 @@ copy_to_requirement() {
 }
 
 run_test() {
-    poetry run pytest -s tests/unit
+    poetry run pytest -s tests
     if [ $? -ne 0 ]; then
         exit 1
     fi
