@@ -5,9 +5,9 @@ This document will guide you through the necessary tools and the configuration p
 
 1. Download the AWS CLI from the official website: [click here](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html).
 
-2. When you reach this step, please ping me (@Willy) on Discord, and I will create an account for you and tell you your `AWS Access Key ID` and `AWS Secret Access Key`, which you will use for the next step. 
+2. When you reach this step, please ping me (@Willy) on Discord, and I will create an account for you and tell you your `AWS Access Key ID` and `AWS Secret Access Key`, which you will use for the next step.
 
-3. Although AWS recommends using SSO, I personally prefer using long-term credentials for their simplicity. You can choose from the configuration options available on their official website: [click here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-quickstart.html). 
+3. Although AWS recommends using SSO, I personally prefer using long-term credentials for their simplicity. You can choose from the configuration options available on their official website: [click here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-quickstart.html).
 
 4. Download the AWS SAM CLI from the official website: [click here](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html).
 

@@ -1,4 +1,9 @@
+"""Module providing function to enforce schema validation"""
+
+
 def enforce_activities_schema_validation(db):
+    """Function that enforce schema validation for activities collection"""
+
     activities_validator = {
         "$jsonSchema": {
             "bsonType": "object",
@@ -6,7 +11,7 @@ def enforce_activities_schema_validation(db):
             "properties": {
                 "name": {
                     "bsonType": "string",
-                    "description": "must be a string and is required"
+                    "description": "must be a string and is required",
                 },
                 "location": {
                     "bsonType": "string",
@@ -14,19 +19,18 @@ def enforce_activities_schema_validation(db):
                 },
                 "start_time": {
                     "bsonType": "string",
-                    "description": "must be a string and is required"
+                    "description": "must be a string and is required",
                 },
                 "end_time": {
                     "bsonType": "string",
-                    "description": "must be a string and is required"
+                    "description": "must be a string and is required",
                 },
                 "note": {
                     "bsonType": "string",
-                    "description": "must be a string and is required"
-                }
-            }
+                    "description": "must be a string and is required",
+                },
+            },
         }
     }
 
     db.command("collMod", "activities", validator=activities_validator)
-    
