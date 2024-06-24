@@ -1,8 +1,8 @@
-# Auth
+# Google Auth
 
-Sign in or sign up the passed in user.
+Sign in the user with their password and email.
 
-**URL** : `/auth`
+**URL** : `/signin`
 
 **Method** : `POST`
 
@@ -12,8 +12,8 @@ Sign in or sign up the passed in user.
 
 ```json
 {
-    "idToken": "[idToken returned by Google Login]",
-    "client_type": "web" or "ios"
+    "email": "[user email]",
+    "password": "[user password]"
 }
 ```
 
@@ -21,8 +21,8 @@ Sign in or sign up the passed in user.
 
 ```json
 {
-    "id_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-    "client_type": "web"
+    "email": "willy3124@email.com",
+    "password": "this is secure"
 }
 ```
 
@@ -58,7 +58,7 @@ This JWT token can be decoded into the following fields:
 
 ## Error Response
 
-**Condition** : If the passed in `id_token` is invalid.
+**Condition** : User doesn't exist
 
 **Code** : `401 Unauthorized`
 
@@ -66,11 +66,11 @@ This JWT token can be decoded into the following fields:
 
 ```json
 {
-    "message": "invalid id_token"
+    "message": "user doesn't exist or password incorrect"
 }
 ```
 
-**Condition** : If the passed in `client_type` is invalid.
+**Condition** : Password incorrect
 
 **Code** : `401 Unauthorized`
 
@@ -78,7 +78,7 @@ This JWT token can be decoded into the following fields:
 
 ```json
 {
-    "message": "invalid client_type"
+    "message": "user doesn't exist or password incorrect"
 }
 ```
 
@@ -104,3 +104,4 @@ This JWT token can be decoded into the following fields:
 {
     "message": "The following fields are missing in body: [missing fields]"
 }
+```
