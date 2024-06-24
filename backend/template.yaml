@@ -52,22 +52,22 @@ Resources:
             Path: /test_auth
             Method: GET
 
-  CreateEventFunction:
+  CreateActivityFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: 'CreateEventFunction'
+      FunctionName: 'CreateActivityFunction'
       CodeUri: src/
-      Handler: create_event.lambda_handler
+      Handler: create_activity.lambda_handler
       Runtime: python3.12
       Architectures:
         - x86_64
-      Role: !GetAtt CreateEventExecutionRole.Arn
+      Role: !GetAtt CreateActivityExecutionRole.Arn
       Events:
-        CreateEventAPI:
+        CreateActivityAPI:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
-            Path: /create_event
+            Path: /create_activity
             Method: POST
 
 
@@ -81,7 +81,7 @@ Resources:
         AllowHeaders: "'*'"
         AllowOrigin: "'*'"
 
-  CreateEventExecutionRole:
+  CreateActivityExecutionRole:
     Type: 'AWS::IAM::Role'
     Properties:
       AssumeRolePolicyDocument:
@@ -101,7 +101,7 @@ Resources:
                   - 'logs:CreateLogGroup'
                   - 'logs:CreateLogStream'
                   - 'logs:PutLogEvents'
-                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/CreateEventFunction:*'
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/CreateActivityFunction:*'
 
         - PolicyName: 'SecretsManagerAccessPolicy'
           PolicyDocument:
