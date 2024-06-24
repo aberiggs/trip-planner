@@ -1,6 +1,7 @@
 """Module providing validator for HTTP requests (headers, POST body)"""
 
 import json
+from http import HTTPStatus
 from planner.http.response import response_handler
 
 
@@ -20,7 +21,7 @@ def header_validator(event, keys):
     missing_keys = ", ".join(sorted(list(missing_keys)))
 
     return response_handler(
-        400,
+        HTTPStatus.BAD_REQUEST,
         {
             "message": f"The following fields are missing in header: {missing_keys}"
         },
@@ -43,7 +44,7 @@ def post_body_validator(event, keys):
     missing_keys = ", ".join(sorted(list(missing_keys)))
 
     return response_handler(
-        400,
+        HTTPStatus.BAD_REQUEST,
         {
             "message": f"The following fields are missing in body: {missing_keys}"
         },
