@@ -2,7 +2,7 @@
 
 import json
 from planner.util.get_secret import get_secret
-from planner.util.schema_validation import enforce_activities_schema_validation
+from planner.db.activities_schema import enforce_activities_schema
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
@@ -12,7 +12,7 @@ mongo_db_connect_url = get_secret(
 client = MongoClient(mongo_db_connect_url, server_api=ServerApi("1"))
 
 db = client.trip_planner
-enforce_activities_schema_validation(db)
+enforce_activities_schema(db)
 
 
 def lambda_handler(event, context):

@@ -1,7 +1,7 @@
-"""Module providing function to enforce schema validation"""
+"""Module providing function to enforce the activities schema"""
 
 
-def enforce_activities_schema_validation(db):
+def enforce_activities_schema(db):
     """Function that enforce schema validation for activities collection"""
 
     activities_validator = {
