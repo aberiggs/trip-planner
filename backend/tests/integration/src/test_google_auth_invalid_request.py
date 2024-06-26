@@ -1,4 +1,4 @@
-"""Module providing integration test to test invalid request handling in auth"""
+"""Module providing integration test to test invalid request handling in google_auth"""
 
 import json
 import datetime
