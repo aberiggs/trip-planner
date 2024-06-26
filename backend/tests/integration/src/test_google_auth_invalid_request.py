@@ -175,7 +175,7 @@ def test_auth_invalid_id_token(
     assert lambda_response == INVALID_GOOGLE_ID_TOKEN
 
 
-def test_auth_invalid_request_body(
+def test_google_auth_invalid_request(
     patch_get_utc_now,
     patch_db_setup,
     patch_create_jwt_token,
@@ -184,7 +184,7 @@ def test_auth_invalid_request_body(
     client,
     rollback_session,
 ):
-    """Function that tests whether auth handles invalid id_token"""
+    """Function that tests whether auth handles invalid request body"""
 
     from google_auth import lambda_handler
 

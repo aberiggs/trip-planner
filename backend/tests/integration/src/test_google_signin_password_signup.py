@@ -1,4 +1,5 @@
-"""Module providing integration test for signing in with auth"""
+"""Module providing integration test for signing in with google but signed up
+with password"""
 
 import json
 import datetime
@@ -92,7 +93,7 @@ def patch_get_utc_now():
         yield m
 
 
-def test_auth_valid_body_signup(
+def test_google_signin_password_signup(
     patch_get_utc_now,
     patch_db_setup,
     patch_create_jwt_token,
@@ -101,7 +102,7 @@ def test_auth_valid_body_signup(
     client,
     rollback_session,
 ):
-    """Function that tests whether auth properly sign up non-existing users"""
+    """Function that tests whether google_auth blocks users signed up with password"""
 
     from google_auth import lambda_handler
 

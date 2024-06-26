@@ -1,4 +1,4 @@
-"""Module providing integration test for signing up with auth"""
+"""Module providing integration test for signing up with googe_auth"""
 
 import json
 import datetime
@@ -91,7 +91,7 @@ def patch_get_utc_now():
         yield m
 
 
-def test_auth_valid_body_signup(
+def test_google_auth_valid_body_signup(
     patch_get_utc_now,
     patch_db_setup,
     patch_create_jwt_token,
@@ -100,7 +100,7 @@ def test_auth_valid_body_signup(
     client,
     rollback_session,
 ):
-    """Function that tests whether auth properly sign in existing users"""
+    """Function that tests whether auth properly sign up non-existing users"""
 
     from planner.jwt.create_jwt_token import create_jwt_token
     from google_auth import lambda_handler

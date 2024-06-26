@@ -1,4 +1,4 @@
-"""Module providing integration test for signing in with auth"""
+"""Module providing integration test for signing up with password_signup"""
 
 import json
 import datetime
@@ -65,14 +65,14 @@ def patch_get_utc_now():
         yield m
 
 
-def test_auth_valid_body_signup(
+def test_password_signup_valid_body(
     patch_get_utc_now,
     patch_db_setup,
     patch_create_jwt_token,
     client,
     rollback_session,
 ):
-    """Function that tests whether auth properly sign up non-existing users"""
+    """Function that tests whether password_signin properly sign up non-existing users"""
 
     from planner.jwt.create_jwt_token import create_jwt_token
     from password_signup import lambda_handler
