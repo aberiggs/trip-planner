@@ -1,10 +1,10 @@
-"""Module providing function to enforce the activities schema"""
+"""Module providing function to enforce the activity schema"""
 
 
-def enforce_activities_schema(db):
+def enforce_activity_schema(db):
     """Function that enforce schema validation for activities collection"""
 
-    activities_validator = {
+    schema_validator = {
         "$jsonSchema": {
             "bsonType": "object",
             "required": ["name", "location", "start_time", "end_time", "note"],
@@ -18,12 +18,12 @@ def enforce_activities_schema(db):
                     "description": "must be an string and is required",
                 },
                 "start_time": {
-                    "bsonType": "string",
-                    "description": "must be a string and is required",
+                    "bsonType": "date",
+                    "description": "must be a date and is required",
                 },
                 "end_time": {
-                    "bsonType": "string",
-                    "description": "must be a string and is required",
+                    "bsonType": "date",
+                    "description": "must be a date and is required",
                 },
                 "note": {
                     "bsonType": "string",
@@ -33,4 +33,4 @@ def enforce_activities_schema(db):
         }
     }
 
-    db.command("collMod", "activities", validator=activities_validator)
+    db.command("collMod", "activities", validator=schema_validator)
