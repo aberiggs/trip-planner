@@ -12,7 +12,7 @@ from planner.http.error import (
 from planner.db.user_schema import enforce_user_schema
 from planner.db.create_collection import create_collection
 from planner.db.db_init import db_init
-import bcrypt
+from planner.util.password import check_password
 
 
 def db_setup():
@@ -46,14 +46,15 @@ def lambda_handler(event, context):
     email = body["email"]
     password = body["password"]
 
-    query_result = db.users.find_one(user_query, session=session)
-    first_name = query_result["first_name"]
-    last_name = query_result["last_name"]
+    found_user = db.users.find_one(user_query, session=session)
 
-    if query_result is None:
+    if found_user is None or found_user["google_signup"]:
         return USER_NOT_EXIST
 
-    if bcrypt.checkpw(password.encode("utf-8"), query_result["password"]):
+    first_name = found_user["first_name"]
+    last_name = found_user["last_name"]
+
+    if check_password(password.encode("utf-8"), found_user["password"]):
         db.users.update_one(
             user_query,
             {

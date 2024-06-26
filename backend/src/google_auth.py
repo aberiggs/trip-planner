@@ -10,6 +10,7 @@ from planner.http.error import (
     INVALID_BODY,
     INVALID_GOOGLE_ID_TOKEN,
     INVALID_CLIENT_TYPE,
+    GOOGLE_SIGN_IN_FAILED,
 )
 from planner.db.user_schema import enforce_user_schema
 from planner.db.create_collection import create_collection
@@ -74,7 +75,9 @@ def lambda_handler(event, context):
     picture = id_info["picture"]
     email = id_info["email"]
 
-    if db.users.find_one(user_query, session=session) is None:
+    found_user = db.users.find_one(user_query, session=session)
+
+    if found_user is None:
         print("[info] user doesn't exist, signing up")
         user = {
             "first_name": first_name,
@@ -82,13 +85,18 @@ def lambda_handler(event, context):
             "picture": picture,
             "email": email,
             "last_visited": utc_now,
-            "google_login": True,
+            "google_signup": True,
+            "password": b"",
             "plans": [],
         }
         db.users.insert_one(user, session=session)
         user_query = {"email": email}
     else:
         print("[info] user exists, signing in")
+
+        if not found_user["google_signup"]:
+            return GOOGLE_SIGN_IN_FAILED
+
         db.users.update_one(
             user_query,
             {

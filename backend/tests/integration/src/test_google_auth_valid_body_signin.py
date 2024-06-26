@@ -25,6 +25,8 @@ user_info = {
     "picture": mock_id_info["picture"],
     "email": mock_id_info["email"],
     "last_visited": utc_now.replace(tzinfo=None),
+    "password": b"",
+    "google_signup": True,
     "plans": [],
 }
 
@@ -71,7 +73,7 @@ def patch_db_setup(client, rollback_session):
     are properly rolled back at the end of the test"""
 
     with patch(
-        "auth.db_setup",
+        "google_auth.db_setup",
         return_value=[client.trip_planner, rollback_session],
         autospec=True,
     ) as m:
@@ -102,12 +104,7 @@ def test_auth_valid_body_signup(
     """Function that tests whether auth properly sign up non-existing users"""
 
     from planner.jwt.create_jwt_token import create_jwt_token
-    from auth import lambda_handler
-
-    event = {
-        "headers": {"Content-Type": "application/json"},
-        "body": json.dumps({"id_token": "mock token", "client_type": "web"}),
-    }
+    from google_auth import lambda_handler
 
     user_query = {"email": mock_id_info["email"]}
 
