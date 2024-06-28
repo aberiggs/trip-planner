@@ -19,6 +19,10 @@ USER_NOT_EXIST = response_handler(
     HTTPStatus.UNAUTHORIZED,
     {"message": "user doesn't exist or password incorrect"},
 )
+GOOGLE_SIGN_IN_FAILED = response_handler(
+    HTTPStatus.UNAUTHORIZED,
+    {"message": "google sign in failed"},
+)
 PASSWORD_INCORRECT = response_handler(
     HTTPStatus.UNAUTHORIZED,
     {"message": "user doesn't exist or password incorrect"},

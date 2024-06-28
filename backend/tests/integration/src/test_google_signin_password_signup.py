@@ -1,11 +1,12 @@
-"""Module providing integration test for signing in with auth"""
+"""Module providing integration test for signing in with google but signed up
+with password"""
 
 import json
 import datetime
 from datetime import timedelta
-from http import HTTPStatus
 from unittest.mock import patch
-from planner.http.response import response_handler
+from planner.http.error import GOOGLE_SIGN_IN_FAILED
+from planner.util.password import hash_password
 import pytest
 
 utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0)
@@ -24,7 +25,9 @@ user_info = {
     "last_name": mock_id_info["family_name"],
     "picture": mock_id_info["picture"],
     "email": mock_id_info["email"],
+    "password": hash_password("secure password"),
     "last_visited": utc_now.replace(tzinfo=None),
+    "google_signup": False,
     "plans": [],
 }
 
@@ -71,7 +74,7 @@ def patch_db_setup(client, rollback_session):
     are properly rolled back at the end of the test"""
 
     with patch(
-        "auth.db_setup",
+        "google_auth.db_setup",
         return_value=[client.trip_planner, rollback_session],
         autospec=True,
     ) as m:
@@ -90,7 +93,7 @@ def patch_get_utc_now():
         yield m
 
 
-def test_auth_valid_body_signup(
+def test_google_signin_password_signup(
     patch_get_utc_now,
     patch_db_setup,
     patch_create_jwt_token,
@@ -99,15 +102,9 @@ def test_auth_valid_body_signup(
     client,
     rollback_session,
 ):
-    """Function that tests whether auth properly sign up non-existing users"""
+    """Function that tests whether google_auth blocks users signed up with password"""
 
-    from planner.jwt.create_jwt_token import create_jwt_token
-    from auth import lambda_handler
-
-    event = {
-        "headers": {"Content-Type": "application/json"},
-        "body": json.dumps({"id_token": "mock token", "client_type": "web"}),
-    }
+    from google_auth import lambda_handler
 
     user_query = {"email": mock_id_info["email"]}
 
@@ -123,17 +120,12 @@ def test_auth_valid_body_signup(
         "body": json.dumps({"id_token": "mock token", "client_type": "web"}),
     }
 
-    jwt_token = create_jwt_token({})
     lambda_response = lambda_handler(event, None)
 
     updated_user = client.trip_planner.users.find_one(
         user_query, session=rollback_session
     )
 
-    # check if the last_visited is updated
-    assert updated_user["last_visited"] == (
-        utc_now + timedelta(hours=1)
-    ).replace(tzinfo=None)
-    assert lambda_response == response_handler(
-        HTTPStatus.OK, {"jwt": jwt_token}
-    )
+    # unsuccessful login should not update last_visited
+    assert updated_user["last_visited"] == (utc_now).replace(tzinfo=None)
+    assert lambda_response == GOOGLE_SIGN_IN_FAILED

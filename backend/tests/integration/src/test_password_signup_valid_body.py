@@ -1,55 +1,31 @@
-"""Module providing integration test for signing up with auth"""
+"""Module providing integration test for signing up with password_signup"""
 
 import json
 import datetime
 from http import HTTPStatus
 from unittest.mock import patch
 from planner.http.response import response_handler
+from planner.util.password import check_password
 import pytest
 
 utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0)
 
-mock_id_info = {
-    "given_name": "Bob",
-    "family_name": "George",
-    "picture": "picture.url",
-    "email": "bob.george@email.com",
-    "last_visited": utc_now,
-    "plans": [],
+signup_info = {
+    "first_name": "Steve",
+    "last_name": "Bob",
+    "email": "steve.bob@email.com",
+    "password": "bob's secure password",
 }
 
 user_info = {
-    "first_name": mock_id_info["given_name"],
-    "last_name": mock_id_info["family_name"],
-    "picture": mock_id_info["picture"],
-    "email": mock_id_info["email"],
+    "first_name": signup_info["first_name"],
+    "last_name": signup_info["last_name"],
+    "picture": "",
+    "email": signup_info["email"],
     "last_visited": utc_now.replace(tzinfo=None),
+    "google_signup": False,
     "plans": [],
 }
-
-
-@pytest.fixture
-def patch_get_secret():
-    """Function that provides fixture to patch planner.util.get_secret.get_secret"""
-
-    with patch(
-        "planner.util.get_secret.get_secret",
-        return_value="mock_secret",
-        autospec=True,
-    ) as m:
-        yield m
-
-
-@pytest.fixture
-def patch_google_verify_token():
-    """Function that provides fixture to patch google.oauth2.id_token.verify_oauth2_token"""
-
-    with patch(
-        "google.oauth2.id_token.verify_oauth2_token",
-        return_value=mock_id_info,
-        autospec=True,
-    ) as m:
-        yield m
 
 
 @pytest.fixture
@@ -70,7 +46,7 @@ def patch_db_setup(client, rollback_session):
     are properly rolled back at the end of the test"""
 
     with patch(
-        "auth.db_setup",
+        "password_signup.db_setup",
         return_value=[client.trip_planner, rollback_session],
         autospec=True,
     ) as m:
@@ -89,30 +65,31 @@ def patch_get_utc_now():
         yield m
 
 
-def test_auth_valid_body_signup(
+def test_password_signup_valid_body(
     patch_get_utc_now,
     patch_db_setup,
     patch_create_jwt_token,
-    patch_google_verify_token,
-    patch_get_secret,
     client,
     rollback_session,
 ):
-    """Function that tests whether auth properly sign in existing users"""
+    """Function that tests whether password_signin properly sign up non-existing users"""
 
     from planner.jwt.create_jwt_token import create_jwt_token
-    from auth import lambda_handler
+    from password_signup import lambda_handler
+
+    user_query = {"email": signup_info["email"]}
 
     event = {
         "headers": {"Content-Type": "application/json"},
-        "body": json.dumps({"id_token": "mock token", "client_type": "web"}),
+        "body": json.dumps(
+            {
+                "email": signup_info["email"],
+                "password": signup_info["password"],
+                "first_name": signup_info["first_name"],
+                "last_name": signup_info["last_name"],
+            }
+        ),
     }
-
-    user_query = {"email": mock_id_info["email"]}
-    assert (
-        client.trip_planner.users.find_one(user_query, session=rollback_session)
-        is None
-    )
 
     jwt_token = create_jwt_token({})
     lambda_response = lambda_handler(event, None)
@@ -120,7 +97,13 @@ def test_auth_valid_body_signup(
     new_user = client.trip_planner.users.find_one(
         user_query, session=rollback_session
     )
+
+    assert check_password(
+        signup_info["password"].encode("utf-8"), new_user["password"]
+    )
+
     new_user.pop("_id")
+    new_user.pop("password")
 
     assert new_user == user_info
     assert lambda_response == response_handler(

@@ -1,4 +1,4 @@
-"""Module providing integration test to test invalid request handling in auth"""
+"""Module providing integration test to test invalid request handling in google_auth"""
 
 import json
 import datetime
@@ -27,6 +27,8 @@ user_info = {
     "picture": mock_id_info["picture"],
     "email": mock_id_info["email"],
     "last_visited": utc_now.replace(tzinfo=None),
+    "password": b"",
+    "google_signup": True,
     "plans": [],
 }
 
@@ -86,7 +88,7 @@ def patch_db_setup(client, rollback_session):
     are properly rolled back at the end of the test"""
 
     with patch(
-        "auth.db_setup",
+        "google_auth.db_setup",
         return_value=[client.trip_planner, rollback_session],
         autospec=True,
     ) as m:
@@ -116,7 +118,7 @@ def test_auth_invalid_client_type(
 ):
     """Function that tests whether auth handles invalid client type"""
 
-    from auth import lambda_handler
+    from google_auth import lambda_handler
 
     event = {
         "headers": {"Content-Type": "application/json"},
@@ -151,7 +153,7 @@ def test_auth_invalid_id_token(
 ):
     """Function that tests whether auth handles invalid id_token"""
 
-    from auth import lambda_handler
+    from google_auth import lambda_handler
 
     event = {
         "headers": {"Content-Type": "application/json"},
@@ -173,7 +175,7 @@ def test_auth_invalid_id_token(
     assert lambda_response == INVALID_GOOGLE_ID_TOKEN
 
 
-def test_auth_invalid_request_body(
+def test_google_auth_invalid_request(
     patch_get_utc_now,
     patch_db_setup,
     patch_create_jwt_token,
@@ -182,9 +184,9 @@ def test_auth_invalid_request_body(
     client,
     rollback_session,
 ):
-    """Function that tests whether auth handles invalid id_token"""
+    """Function that tests whether auth handles invalid request body"""
 
-    from auth import lambda_handler
+    from google_auth import lambda_handler
 
     event = {
         "headers": {"Content-Type": "application/json"},

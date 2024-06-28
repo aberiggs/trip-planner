@@ -1,8 +1,8 @@
-# Password Signin
+# Password Signup
 
 Sign in the user with their password and email.
 
-**URL** : `/signin`
+**URL** : `/signup`
 
 **Method** : `POST`
 
@@ -13,7 +13,9 @@ Sign in the user with their password and email.
 ```json
 {
     "email": "[]",
-    "password": "[]"
+    "password": "[]",
+    "first_name": "[]",
+    "last_name": "[]"
 }
 ```
 
@@ -22,7 +24,9 @@ Sign in the user with their password and email.
 ```json
 {
     "email": "willy3124@email.com",
-    "password": "this is secure"
+    "password": "this is secure",
+    "first_name": "Willy",
+    "last_name": "Lien"
 }
 ```
 
@@ -58,27 +62,15 @@ This JWT token can be decoded into the following fields:
 
 ## Error Response
 
-**Condition** : User doesn't exist
+**Condition** : Email is already used by another account
 
-**Code** : `401 Unauthorized`
-
-**Content** :
-
-```json
-{
-    "message": "user doesn't exist or password incorrect"
-}
-```
-
-**Condition** : Password incorrect
-
-**Code** : `401 Unauthorized`
+**Code** : `409 Conflict`
 
 **Content** :
 
 ```json
 {
-    "message": "user doesn't exist or password incorrect"
+    "message": "email already used"
 }
 ```
 

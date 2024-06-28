@@ -8,7 +8,7 @@ from planner.http.error import INVALID_BODY, EMAIL_USED
 from planner.db.user_schema import enforce_user_schema
 from planner.db.create_collection import create_collection
 from planner.db.db_init import db_init
-import bcrypt
+from planner.util.password import hash_password
 
 
 def db_setup():
@@ -45,8 +45,7 @@ def lambda_handler(event, context):
     last_name = body["last_name"]
     email = body["email"]
     password = body["password"]
-    salt = bcrypt.gensalt()
-    hashed_salted_password = bcrypt.hashpw(password.encode("utf-8"), salt)
+    hashed_salted_password = hash_password(password)
 
     if db.users.find_one(user_query, session=session) is None:
         print("[info] user doesn't exist, signing up")
@@ -55,7 +54,7 @@ def lambda_handler(event, context):
             "last_name": last_name,
             "picture": "",
             "email": email,
-            "google_login": False,
+            "google_signup": False,
             "password": hashed_salted_password,
             "last_visited": utc_now,
             "plans": [],
