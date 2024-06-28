@@ -25,7 +25,7 @@ export default function Landing() {
       }}>
 
         <ThemedText style={{fontSize: 40}}>Welcome <HelloWave/></ThemedText>
-        <Link replace href="/plans" asChild>
+        <Link replace href="/google-login" asChild>
           <ThemedButton style={{flexDirection: "row", alignItems: "center", justifyContent: "space-around", gap: 10}}>
             <ThemedIcon color={ColorTypes.base} name="logo-google"/>
             <ThemedText color={ColorTypes.base}>Log in with Google</ThemedText>
