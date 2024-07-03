@@ -73,7 +73,7 @@ def patch_db_setup(client, rollback_session):
     are properly rolled back at the end of the test"""
 
     with patch(
-        "password_signin.db_setup",
+        "auth.password_signin.db_setup",
         return_value=[client.trip_planner, rollback_session],
         autospec=True,
     ) as m:
@@ -103,7 +103,7 @@ def test_password_signin_google_signup(
 ):
     """Function that tests whether password_signin blocks users signed up with google"""
 
-    from password_signin import lambda_handler
+    from auth.password_signin import lambda_handler
 
     user_query = {"email": mock_id_info["email"]}
 

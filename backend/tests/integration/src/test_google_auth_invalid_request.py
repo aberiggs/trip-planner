@@ -88,7 +88,7 @@ def patch_db_setup(client, rollback_session):
     are properly rolled back at the end of the test"""
 
     with patch(
-        "google_auth.db_setup",
+        "auth.google_auth.db_setup",
         return_value=[client.trip_planner, rollback_session],
         autospec=True,
     ) as m:
@@ -118,7 +118,7 @@ def test_auth_invalid_client_type(
 ):
     """Function that tests whether auth handles invalid client type"""
 
-    from google_auth import lambda_handler
+    from auth.google_auth import lambda_handler
 
     event = {
         "headers": {"Content-Type": "application/json"},
@@ -153,7 +153,7 @@ def test_auth_invalid_id_token(
 ):
     """Function that tests whether auth handles invalid id_token"""
 
-    from google_auth import lambda_handler
+    from auth.google_auth import lambda_handler
 
     event = {
         "headers": {"Content-Type": "application/json"},
@@ -186,7 +186,7 @@ def test_google_auth_invalid_request(
 ):
     """Function that tests whether auth handles invalid request body"""
 
-    from google_auth import lambda_handler
+    from auth.google_auth import lambda_handler
 
     event = {
         "headers": {"Content-Type": "application/json"},

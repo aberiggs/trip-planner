@@ -49,7 +49,7 @@ def patch_db_setup(client, rollback_session):
     are properly rolled back at the end of the test"""
 
     with patch(
-        "password_signin.db_setup",
+        "auth.password_signin.db_setup",
         return_value=[client.trip_planner, rollback_session],
         autospec=True,
     ) as m:
@@ -78,7 +78,7 @@ def test_password_signin_valid_body(
     """Function that tests whether password_signin properly sign in existing users"""
 
     from planner.jwt.create_jwt_token import create_jwt_token
-    from password_signin import lambda_handler
+    from auth.password_signin import lambda_handler
 
     user_query = {"email": signin_info["email"]}
 

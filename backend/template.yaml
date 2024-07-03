@@ -21,7 +21,7 @@ Resources:
     Properties:
       FunctionName: 'PasswordSignInFunction'
       CodeUri: src/
-      Handler: password_signin.lambda_handler
+      Handler: auth.password_signin.lambda_handler
       Runtime: python3.12
       Architectures:
         - x86_64
@@ -39,7 +39,7 @@ Resources:
     Properties:
       FunctionName: 'PasswordSignUpFunction'
       CodeUri: src/
-      Handler: password_signup.lambda_handler
+      Handler: auth.password_signup.lambda_handler
       Runtime: python3.12
       Architectures:
         - x86_64
@@ -57,7 +57,7 @@ Resources:
     Properties:
       FunctionName: 'GoogleAuthFunction'
       CodeUri: src/
-      Handler: google_auth.lambda_handler
+      Handler: auth.google_auth.lambda_handler
       Runtime: python3.12
       Architectures:
         - x86_64
@@ -75,7 +75,7 @@ Resources:
     Properties:
       FunctionName: TestAuthFunction
       CodeUri: src/
-      Handler: test_auth.lambda_handler
+      Handler: auth.test_auth.lambda_handler
       Runtime: python3.12
       Architectures:
         - x86_64

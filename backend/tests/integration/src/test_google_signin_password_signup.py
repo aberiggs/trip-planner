@@ -74,7 +74,7 @@ def patch_db_setup(client, rollback_session):
     are properly rolled back at the end of the test"""
 
     with patch(
-        "google_auth.db_setup",
+        "auth.google_auth.db_setup",
         return_value=[client.trip_planner, rollback_session],
         autospec=True,
     ) as m:
@@ -104,7 +104,7 @@ def test_google_signin_password_signup(
 ):
     """Function that tests whether google_auth blocks users signed up with password"""
 
-    from google_auth import lambda_handler
+    from auth.google_auth import lambda_handler
 
     user_query = {"email": mock_id_info["email"]}
 
