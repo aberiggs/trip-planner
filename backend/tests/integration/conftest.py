@@ -6,6 +6,7 @@ from planner.util.get_secret import get_secret
 from planner.db.user_schema import enforce_user_schema
 from planner.db.create_collection import create_collection
 
+
 @pytest.fixture(scope="session")
 def client():
     """Function providing fixture to connect to MongoDB"""

@@ -106,6 +106,23 @@ Resources:
             Path: /create_event
             Method: POST
 
+  CreatePlanFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 'CreatePlanFunction'
+      CodeUri: src/
+      Handler: plan.create_plan.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Role: !GetAtt CreatePlanExecutionRole.Arn
+      Events:
+        CreateEventAPI:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyRestApi
+            Path: /create_plan
+            Method: POST
 
   MyRestApi:
     Type: AWS::Serverless::Api
@@ -116,6 +133,38 @@ Resources:
         AllowMethods: "'GET,POST,OPTIONS,PATCH,DELETE'"
         AllowHeaders: "'*'"
         AllowOrigin: "'*'"
+
+  CreatePlanExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'CloudWatchLogPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/CreatePlanFunction:*'
+
+        - PolicyName: 'SecretsManagerAccessPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:mongo-db-connection-secret-lzoiPy'
+
 
   CreateEventExecutionRole:
     Type: 'AWS::IAM::Role'

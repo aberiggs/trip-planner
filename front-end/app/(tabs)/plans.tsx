@@ -8,7 +8,7 @@ import { ColorTypes } from "@/constants/Colors";
 
 export default function Plans() {
   return (
-    <ThemedFlatList 
+    <ThemedFlatList
       contentContainerStyle={{
         flex: 1,
         flexDirection: "column",
@@ -30,7 +30,7 @@ interface PlanCardProps {
 
 const PlanCard: React.FC<PlanCardProps> = ({plan}) => {
   return (
-    <ThemedView 
+    <ThemedView
       style={{
         flexDirection: "row",
         justifyContent: "space-between",
@@ -60,4 +60,3 @@ const PlansData: Plan[] = [
   { name: "Bellevue Trip", date: new Date(Date.parse("2024-06-20")) },
   { name: "<Generic Name>", date: new Date(Date.parse("2024-07-10")) },
 ];
-

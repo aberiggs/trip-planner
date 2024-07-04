@@ -10,7 +10,7 @@ import { ColorTypes } from "@/constants/Colors";
 
 export default function Landing() {
   return (
-    <ThemedView 
+    <ThemedView
       style={{
         flex: 1,
         justifyContent: "center",

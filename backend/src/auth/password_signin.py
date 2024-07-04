@@ -4,13 +4,12 @@ import json
 from http import HTTPStatus
 from planner.http.validator import post_body_validator
 from planner.http.response import response_handler
-from planner.http.error import (
-    INVALID_BODY,
-    USER_NOT_EXIST,
-    PASSWORD_INCORRECT,
+from planner.http.exception import (
+    HttpException,
+    PasswordIncorrectException,
+    UserNotExistException,
 )
-from planner.db.user_schema import enforce_user_schema
-from planner.db.create_collection import create_collection
+from planner.db.repo.user_repo import UserRepo
 from planner.db.db_init import db_init
 from planner.util.password import check_password
 
@@ -19,9 +18,8 @@ def db_setup():
     """Function thaht sets up mongodb client, session, schema enforcement"""
     client, session = db_init()
     db = client.trip_planner
-    create_collection(db, "users")
-    enforce_user_schema(db)
-    return db, session
+    user_repo = UserRepo(db, session)
+    return user_repo
 
 
 def lambda_handler(event, context):
@@ -30,48 +28,46 @@ def lambda_handler(event, context):
     from planner.jwt.create_jwt_token import create_jwt_token
     from planner.util.get_utc_now import get_utc_now
 
-    db, session = db_setup()
+    user_repo = db_setup()
 
     try:
         body = json.loads(event["body"])
-    except json.JSONDecodeError:
-        return INVALID_BODY
 
-    body_validator_response = post_body_validator(event, ["password", "email"])
-    if body_validator_response is not None:
-        return body_validator_response
+        post_body_validator(event, ["password", "email"])
 
-    user_query = {"email": body["email"]}
-    utc_now = get_utc_now()
-    email = body["email"]
-    password = body["password"]
+        utc_now = get_utc_now()
+        email = body["email"]
+        password = body["password"]
 
-    found_user = db.users.find_one(user_query, session=session)
+        found_user = user_repo.find_one_by_email(email)
 
-    if found_user is None or found_user["google_signup"]:
-        return USER_NOT_EXIST
+        if not found_user or found_user["google_signup"]:
+            raise UserNotExistException
 
-    first_name = found_user["first_name"]
-    last_name = found_user["last_name"]
+        first_name = found_user["first_name"]
+        last_name = found_user["last_name"]
 
-    if check_password(password.encode("utf-8"), found_user["password"]):
-        db.users.update_one(
-            user_query,
-            {
-                "$set": {
-                    "last_visited": utc_now,
+        if check_password(password.encode("utf-8"), found_user["password"]):
+            user_repo.update_one(
+                email,
+                {
+                    "$set": {
+                        "last_visited": utc_now,
+                    }
+                },
+            )
+
+            jwt_token = create_jwt_token(
+                {
+                    "email": email,
+                    "picture": "",
+                    "name": f"{first_name} {last_name}",
                 }
-            },
-            session=session,
-        )
+            )
+            return response_handler(
+                {"code": HTTPStatus.OK, "body": {"jwt": jwt_token}}
+            )
 
-        token_payload = {
-            "email": email,
-            "picture": "",
-            "name": f"{first_name} {last_name}",
-        }
-
-        jwt_token = create_jwt_token(token_payload)
-        return response_handler(HTTPStatus.OK, {"jwt": jwt_token})
-
-    return PASSWORD_INCORRECT
+        raise PasswordIncorrectException
+    except HttpException as e:
+        return response_handler(e.args[0])
