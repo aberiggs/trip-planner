@@ -3,8 +3,9 @@
 import json
 from unittest import TestCase
 from http import HTTPStatus
+import pytest
 from planner.http.validator import header_validator, post_body_validator
-from planner.http.response import response_handler
+from planner.http.exception import HttpException
 
 
 class TestValidator(TestCase):
@@ -19,12 +20,15 @@ class TestValidator(TestCase):
         expected_keys = ["Authentication", "Content-Type"]
 
         event = {"headers": {"Content-Type": "application/json"}}
-        assert header_validator(event, expected_keys) == response_handler(
-            HTTPStatus.BAD_REQUEST,
-            {
-                "message": "The following fields are missing in header: Authentication"
-            },
-        )
+
+        with pytest.raises(HttpException) as e:
+            header_validator(event, expected_keys)
+            assert e.args[0] == {
+                "code": HTTPStatus.BAD_REQUEST.value,
+                "body": {
+                    "message": "The following fields are missing in header: Authentication"
+                },
+            }
 
     def test_header_validator_missing_headers(self) -> None:
         """Function that tests whether header validator catches missing headers"""
@@ -37,12 +41,14 @@ class TestValidator(TestCase):
             sorted(list(["Authentication", "Content-Type"]))
         )
 
-        assert header_validator(event, expected_keys) == response_handler(
-            HTTPStatus.BAD_REQUEST,
-            {
-                "message": f"The following fields are missing in header: {missing_keys}"
-            },
-        )
+        with pytest.raises(HttpException) as e:
+            header_validator(event, expected_keys)
+            assert e.args[0] == {
+                "code": HTTPStatus.BAD_REQUEST.value,
+                "body": {
+                    "message": f"The following fields are missing in header: {missing_keys}"
+                },
+            }
 
     def test_header_validator_no_missing_header(self) -> None:
         """Function that tests whether header validator returns None when there are
@@ -51,7 +57,11 @@ class TestValidator(TestCase):
         expected_keys = ["Authentication"]
 
         event = {"headers": {"Authentication"}}
-        assert header_validator(event, expected_keys) is None
+
+        try:
+            header_validator(event, expected_keys)
+        except Exception as e:
+            pytest.fail(f"header_validator raised an exception: {e}")
 
     def test_post_body_validator_missing_key(self) -> None:
         """Function that tests whether post body validator catches the missing key"""
@@ -64,10 +74,15 @@ class TestValidator(TestCase):
                 {"name": "willy", "email": "chiweilien@gmail.com"}
             ),
         }
-        assert post_body_validator(event, expected_keys) == response_handler(
-            HTTPStatus.BAD_REQUEST,
-            {"message": "The following fields are missing in body: addr"},
-        )
+
+        with pytest.raises(HttpException) as e:
+            header_validator(event, expected_keys)
+            assert e.args[0] == {
+                "code": HTTPStatus.BAD_REQUEST.value,
+                "body": {
+                    "message": "The following fields are missing in body: addr"
+                },
+            }
 
     def test_post_body_validator_missing_keys(self) -> None:
         """Function that tests whether post body validator catches missing keys"""
@@ -85,12 +100,14 @@ class TestValidator(TestCase):
 
         missing_keys = ", ".join(sorted(list(["email", "addr"])))
 
-        assert post_body_validator(event, expected_keys) == response_handler(
-            HTTPStatus.BAD_REQUEST,
-            {
-                "message": f"The following fields are missing in body: {missing_keys}"
-            },
-        )
+        with pytest.raises(HttpException) as e:
+            header_validator(event, expected_keys)
+            assert e.args[0] == {
+                "code": HTTPStatus.BAD_REQUEST.value,
+                "body": {
+                    "message": f"The following fields are missing in body: {missing_keys}"
+                },
+            }
 
     def test_post_body_validator_no_missing_keys(self) -> None:
         """Function that tests whether post body validator returns None when there
@@ -108,7 +125,10 @@ class TestValidator(TestCase):
                 }
             ),
         }
-        assert post_body_validator(event, expected_keys) is None
+        try:
+            post_body_validator(event, expected_keys)
+        except Exception as e:
+            pytest.fail(f"post_body_validator raised an exception: {e}")
 
     def tearDown(self) -> None:
         pass

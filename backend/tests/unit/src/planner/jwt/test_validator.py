@@ -29,14 +29,11 @@ class TestValidator(TestCase):
             "name": "Chi-Wei Lien",
         }
 
-        current_time = int(time.time())
-        expiration_time = current_time + 864000  # ten days
-
         token = jwt.encode(
             payload,
             "fake_secret",
             algorithm="HS256",
-            headers={"exp": expiration_time},
+            headers={"exp": int(time.time()) + 864000},  # ten days
         )
 
         assert jwt_validator(token) is False
@@ -46,6 +43,7 @@ class TestValidator(TestCase):
         signed with the same key"""
 
         from planner.jwt.validator import jwt_validator
+        from planner.jwt.create_jwt_token import create_jwt_token
 
         payload = {
             "email": "chiweilien@gmail.com",
@@ -53,15 +51,7 @@ class TestValidator(TestCase):
             "name": "Chi-Wei Lien",
         }
 
-        current_time = int(time.time())
-        expiration_time = current_time + 864000  # ten days
-
-        token = jwt.encode(
-            payload,
-            "mock_secret",
-            algorithm="HS256",
-            headers={"exp": expiration_time},
-        )
+        token = create_jwt_token(payload, int(time.time()) + 864000)  # ten days
 
         assert jwt_validator(token) is True
 
@@ -69,6 +59,7 @@ class TestValidator(TestCase):
         """Function that tests whether jwt validator catches expired token"""
 
         from planner.jwt.validator import jwt_validator
+        from planner.jwt.create_jwt_token import create_jwt_token
 
         payload = {
             "email": "chiweilien@gmail.com",
@@ -76,15 +67,7 @@ class TestValidator(TestCase):
             "name": "Chi-Wei Lien",
         }
 
-        current_time = int(time.time())
-        expiration_time = current_time - 10
-
-        token = jwt.encode(
-            payload,
-            "mock_secret",
-            algorithm="HS256",
-            headers={"exp": expiration_time},
-        )
+        token = create_jwt_token(payload, int(time.time()) - 10)
 
         assert jwt_validator(token) is False
 
