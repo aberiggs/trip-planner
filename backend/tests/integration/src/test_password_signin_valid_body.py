@@ -44,13 +44,13 @@ def patch_create_jwt_token():
 
 
 @pytest.fixture
-def patch_db_setup(client, rollback_session):
+def patch_db_setup(user_repo):
     """Function that provides fixture to patch auth.db_setup so that transactions
     are properly rolled back at the end of the test"""
 
     with patch(
         "auth.password_signin.db_setup",
-        return_value=[client.trip_planner, rollback_session],
+        return_value=user_repo,
         autospec=True,
     ) as m:
         yield m
@@ -72,21 +72,16 @@ def test_password_signin_valid_body(
     patch_get_utc_now,
     patch_db_setup,
     patch_create_jwt_token,
-    client,
-    rollback_session,
+    user_repo,
 ):
     """Function that tests whether password_signin properly sign in existing users"""
 
     from planner.jwt.create_jwt_token import create_jwt_token
     from auth.password_signin import lambda_handler
 
-    user_query = {"email": signin_info["email"]}
-
     # Expecting the user exists in the database before the user sign in
-    client.trip_planner.users.insert_one(user_info, session=rollback_session)
-    original_user = client.trip_planner.users.find_one(
-        user_query, session=rollback_session
-    )
+    user_repo.insert_one(user_info)
+    original_user = user_repo.find_one_by_email(signin_info["email"])
     assert original_user == user_info
 
     event = {
@@ -102,14 +97,12 @@ def test_password_signin_valid_body(
     jwt_token = create_jwt_token({})
     lambda_response = lambda_handler(event, None)
 
-    updated_user = client.trip_planner.users.find_one(
-        user_query, session=rollback_session
-    )
+    updated_user = user_repo.find_one_by_email(signin_info["email"])
 
     # check if the last_visited is updated
     assert updated_user["last_visited"] == (
         utc_now + timedelta(hours=1)
     ).replace(tzinfo=None)
     assert lambda_response == response_handler(
-        HTTPStatus.OK, {"jwt": jwt_token}
+        {"code": HTTPStatus.OK.value, "body": {"jwt": jwt_token}}
     )

@@ -7,7 +7,7 @@ from typing import Dict, Any
 def response_handler(response: Dict[str, Any]) -> Dict[str, Any]:
     """Function that returns http reponse with CORS policy enabled"""
 
-    if "code" in response and "body" not in response:
+    if "code" not in response or "body" not in response:
         raise ValueError(
             "Invalid response format. Expected a response dict with 'code' and 'body' keys."
         )

@@ -11,6 +11,7 @@ from planner.http.exception import (
     InvalidGoogleIdTokenException,
     InvalidClientTypeException,
     GoogleSignInFailedException,
+    InvalidBodyException,
 )
 from planner.db.repo.user_repo import UserRepo
 from planner.db.db_init import db_init
@@ -37,7 +38,10 @@ def lambda_handler(event, context):
     user_repo = db_setup()
 
     try:
-        body = json.loads(event["body"])
+        try:
+            body = json.loads(event["body"])
+        except json.JSONDecodeError as e:
+            raise InvalidBodyException from e
 
         post_body_validator(event, ["id_token", "client_type"])
 
@@ -110,6 +114,5 @@ def lambda_handler(event, context):
         return response_handler(
             {"code": HTTPStatus.OK, "body": {"jwt": jwt_token}}
         )
-
     except HttpException as e:
         return response_handler(e.args[0])

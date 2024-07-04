@@ -22,7 +22,7 @@ run_install() {
 }
 
 run_test() {
-    poetry run pytest -s tests
+    poetry run pytest -s tests/integration
     if [ $? -ne 0 ]; then
         exit 1
     fi

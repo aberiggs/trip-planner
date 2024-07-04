@@ -13,7 +13,7 @@ class InvalidBodyException(HttpException):
     def __init__(self):
         super().__init__(
             {
-                "code": HTTPStatus.BAD_REQUEST,
+                "code": HTTPStatus.BAD_REQUEST.value,
                 "body": {"message": "request body is an invalid JSON"},
             }
         )
@@ -25,7 +25,7 @@ class InvalidGoogleIdTokenException(HttpException):
     def __init__(self):
         super().__init__(
             {
-                "code": HTTPStatus.UNAUTHORIZED,
+                "code": HTTPStatus.UNAUTHORIZED.value,
                 "body": {"message": "invalid id_token"},
             }
         )
@@ -37,7 +37,7 @@ class InvalidClientTypeException(HttpException):
     def __init__(self):
         super().__init__(
             {
-                "code": HTTPStatus.UNAUTHORIZED,
+                "code": HTTPStatus.UNAUTHORIZED.value,
                 "body": {"message": "invalid client_type"},
             }
         )
@@ -50,7 +50,7 @@ class EmailUsedException(HttpException):
     def __init__(self):
         super().__init__(
             {
-                "code": HTTPStatus.CONFLICT,
+                "code": HTTPStatus.CONFLICT.value,
                 "body": {"message": "email already used"},
             }
         )
@@ -63,7 +63,7 @@ class UserNotExistException(HttpException):
     def __init__(self):
         super().__init__(
             {
-                "code": HTTPStatus.UNAUTHORIZED,
+                "code": HTTPStatus.UNAUTHORIZED.value,
                 "body": {"message": "user doesn't exist or password incorrect"},
             }
         )
@@ -76,7 +76,7 @@ class GoogleSignInFailedException(HttpException):
     def __init__(self):
         super().__init__(
             {
-                "code": HTTPStatus.UNAUTHORIZED,
+                "code": HTTPStatus.UNAUTHORIZED.value,
                 "body": {"message": "user doesn't exist or password incorrect"},
             }
         )
@@ -89,7 +89,7 @@ class PasswordIncorrectException(HttpException):
     def __init__(self):
         super().__init__(
             {
-                "code": HTTPStatus.UNAUTHORIZED,
+                "code": HTTPStatus.UNAUTHORIZED.value,
                 "body": {"message": "user doesn't exist or password incorrect"},
             }
         )
@@ -102,7 +102,7 @@ class ResourceNotFoundException(HttpException):
     def __init__(self):
         super().__init__(
             {
-                "code": HTTPStatus.NOT_FOUND,
+                "code": HTTPStatus.NOT_FOUND.value,
                 "body": {"message": "resource cannot be found"},
             }
         )
@@ -115,7 +115,7 @@ class InvalidPlanDateException(HttpException):
     def __init__(self):
         super().__init__(
             {
-                "code": HTTPStatus.BAD_REQUEST,
+                "code": HTTPStatus.BAD_REQUEST.value,
                 "body": {
                     "message": "plan date should follow the format: %m/%d/%y"
                 },

@@ -41,13 +41,13 @@ def patch_create_jwt_token():
 
 
 @pytest.fixture
-def patch_db_setup(client, rollback_session):
+def patch_db_setup(user_repo):
     """Function that provides fixture to patch auth.db_setup so that transactions
     are properly rolled back at the end of the test"""
 
     with patch(
         "auth.password_signup.db_setup",
-        return_value=[client.trip_planner, rollback_session],
+        return_value=user_repo,
         autospec=True,
     ) as m:
         yield m
@@ -69,15 +69,12 @@ def test_password_signup_valid_body(
     patch_get_utc_now,
     patch_db_setup,
     patch_create_jwt_token,
-    client,
-    rollback_session,
+    user_repo,
 ):
     """Function that tests whether password_signin properly sign up non-existing users"""
 
     from planner.jwt.create_jwt_token import create_jwt_token
     from auth.password_signup import lambda_handler
-
-    user_query = {"email": signup_info["email"]}
 
     event = {
         "headers": {"Content-Type": "application/json"},
@@ -94,9 +91,7 @@ def test_password_signup_valid_body(
     jwt_token = create_jwt_token({})
     lambda_response = lambda_handler(event, None)
 
-    new_user = client.trip_planner.users.find_one(
-        user_query, session=rollback_session
-    )
+    new_user = user_repo.find_one_by_email(signup_info["email"])
 
     assert check_password(
         signup_info["password"].encode("utf-8"), new_user["password"]
@@ -107,5 +102,5 @@ def test_password_signup_valid_body(
 
     assert new_user == user_info
     assert lambda_response == response_handler(
-        HTTPStatus.OK, {"jwt": jwt_token}
+        {"code": HTTPStatus.OK.value, "body": {"jwt": jwt_token}}
     )

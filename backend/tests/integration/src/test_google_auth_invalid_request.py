@@ -1,14 +1,15 @@
 """Module providing integration test to test invalid request handling in google_auth"""
 
 import json
-import datetime
 from unittest.mock import patch
-from planner.http.error import (
-    INVALID_CLIENT_TYPE,
-    INVALID_GOOGLE_ID_TOKEN,
-    INVALID_BODY,
-)
+import datetime
 import pytest
+from planner.http.exception import (
+    InvalidGoogleIdTokenException,
+    InvalidClientTypeException,
+    InvalidBodyException,
+)
+from planner.http.response import response_handler
 
 utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0)
 
@@ -83,13 +84,13 @@ def patch_create_jwt_token():
 
 
 @pytest.fixture
-def patch_db_setup(client, rollback_session):
+def patch_db_setup(user_repo):
     """Function that provides fixture to patch auth.db_setup so that transactions
     are properly rolled back at the end of the test"""
 
     with patch(
         "auth.google_auth.db_setup",
-        return_value=[client.trip_planner, rollback_session],
+        return_value=user_repo,
         autospec=True,
     ) as m:
         yield m
@@ -113,8 +114,7 @@ def test_auth_invalid_client_type(
     patch_create_jwt_token,
     patch_google_verify_token,
     patch_get_secret,
-    client,
-    rollback_session,
+    user_repo,
 ):
     """Function that tests whether auth handles invalid client type"""
 
@@ -127,19 +127,14 @@ def test_auth_invalid_client_type(
         ),
     }
 
-    user_query = {"email": mock_id_info["email"]}
-    assert (
-        client.trip_planner.users.find_one(user_query, session=rollback_session)
-        is None
-    )
+    assert not user_repo.find_one_by_email(mock_id_info["email"])
 
     lambda_response = lambda_handler(event, None)
 
-    assert (
-        client.trip_planner.users.find_one(user_query, session=rollback_session)
-        is None
+    assert not user_repo.find_one_by_email(mock_id_info["email"])
+    assert lambda_response == response_handler(
+        InvalidClientTypeException().args[0]
     )
-    assert lambda_response == INVALID_CLIENT_TYPE
 
 
 def test_auth_invalid_id_token(
@@ -148,8 +143,7 @@ def test_auth_invalid_id_token(
     patch_create_jwt_token,
     patch_google_verify_invalid_token,
     patch_get_secret,
-    client,
-    rollback_session,
+    user_repo,
 ):
     """Function that tests whether auth handles invalid id_token"""
 
@@ -160,19 +154,14 @@ def test_auth_invalid_id_token(
         "body": json.dumps({"id_token": "invalid token", "client_type": "web"}),
     }
 
-    user_query = {"email": mock_id_info["email"]}
-    assert (
-        client.trip_planner.users.find_one(user_query, session=rollback_session)
-        is None
-    )
+    assert not user_repo.find_one_by_email(mock_id_info["email"])
 
     lambda_response = lambda_handler(event, None)
 
-    assert (
-        client.trip_planner.users.find_one(user_query, session=rollback_session)
-        is None
+    assert not user_repo.find_one_by_email(mock_id_info["email"])
+    assert lambda_response == response_handler(
+        InvalidGoogleIdTokenException().args[0]
     )
-    assert lambda_response == INVALID_GOOGLE_ID_TOKEN
 
 
 def test_google_auth_invalid_request(
@@ -181,8 +170,7 @@ def test_google_auth_invalid_request(
     patch_create_jwt_token,
     patch_google_verify_invalid_token,
     patch_get_secret,
-    client,
-    rollback_session,
+    user_repo,
 ):
     """Function that tests whether auth handles invalid request body"""
 
@@ -194,16 +182,9 @@ def test_google_auth_invalid_request(
         "body": '{"id_token: "mock token", "client_type": "web"}',
     }
 
-    user_query = {"email": mock_id_info["email"]}
-    assert (
-        client.trip_planner.users.find_one(user_query, session=rollback_session)
-        is None
-    )
+    assert not user_repo.find_one_by_email(mock_id_info["email"])
 
     lambda_response = lambda_handler(event, None)
 
-    assert (
-        client.trip_planner.users.find_one(user_query, session=rollback_session)
-        is None
-    )
-    assert lambda_response == INVALID_BODY
+    assert not user_repo.find_one_by_email(mock_id_info["email"])
+    assert lambda_response == response_handler(InvalidBodyException().args[0])

@@ -67,13 +67,13 @@ def patch_create_jwt_token():
 
 
 @pytest.fixture
-def patch_db_setup(client, rollback_session):
+def patch_db_setup(user_repo):
     """Function that provides fixture to patch auth.db_setup so that transactions
     are properly rolled back at the end of the test"""
 
     with patch(
         "auth.google_auth.db_setup",
-        return_value=[client.trip_planner, rollback_session],
+        return_value=user_repo,
         autospec=True,
     ) as m:
         yield m
@@ -97,8 +97,7 @@ def test_google_auth_valid_body_signup(
     patch_create_jwt_token,
     patch_google_verify_token,
     patch_get_secret,
-    client,
-    rollback_session,
+    user_repo,
 ):
     """Function that tests whether auth properly sign up non-existing users"""
 
@@ -110,21 +109,15 @@ def test_google_auth_valid_body_signup(
         "body": json.dumps({"id_token": "mock token", "client_type": "web"}),
     }
 
-    user_query = {"email": mock_id_info["email"]}
-    assert (
-        client.trip_planner.users.find_one(user_query, session=rollback_session)
-        is None
-    )
+    assert not user_repo.find_one_by_email(mock_id_info["email"])
 
     jwt_token = create_jwt_token({})
     lambda_response = lambda_handler(event, None)
 
-    new_user = client.trip_planner.users.find_one(
-        user_query, session=rollback_session
-    )
+    new_user = user_repo.find_one_by_email(mock_id_info["email"])
     new_user.pop("_id")
 
     assert new_user == user_info
     assert lambda_response == response_handler(
-        HTTPStatus.OK, {"jwt": jwt_token}
+        {"code": HTTPStatus.OK.value, "body": {"jwt": jwt_token}}
     )

@@ -5,8 +5,9 @@ import json
 import datetime
 from datetime import timedelta
 from unittest.mock import patch
-from planner.http.error import USER_NOT_EXIST
 import pytest
+from planner.http.response import response_handler
+from planner.http.exception import UserNotExistException
 
 utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0)
 
@@ -68,13 +69,13 @@ def patch_create_jwt_token():
 
 
 @pytest.fixture
-def patch_db_setup(client, rollback_session):
+def patch_db_setup(user_repo):
     """Function that provides fixture to patch auth.db_setup so that transactions
     are properly rolled back at the end of the test"""
 
     with patch(
         "auth.password_signin.db_setup",
-        return_value=[client.trip_planner, rollback_session],
+        return_value=user_repo,
         autospec=True,
     ) as m:
         yield m
@@ -98,20 +99,15 @@ def test_password_signin_google_signup(
     patch_create_jwt_token,
     patch_google_verify_token,
     patch_get_secret,
-    client,
-    rollback_session,
+    user_repo,
 ):
     """Function that tests whether password_signin blocks users signed up with google"""
 
     from auth.password_signin import lambda_handler
 
-    user_query = {"email": mock_id_info["email"]}
-
     # Expecting the user exists in the database before the user sign in
-    client.trip_planner.users.insert_one(user_info, session=rollback_session)
-    original_user = client.trip_planner.users.find_one(
-        user_query, session=rollback_session
-    )
+    user_repo.insert_one(user_info)
+    original_user = user_repo.find_one_by_email(mock_id_info["email"])
     assert original_user == user_info
 
     event = {
@@ -125,11 +121,8 @@ def test_password_signin_google_signup(
     }
 
     lambda_response = lambda_handler(event, None)
-
-    updated_user = client.trip_planner.users.find_one(
-        user_query, session=rollback_session
-    )
+    updated_user = user_repo.find_one_by_email(mock_id_info["email"])
 
     # unsuccessful login should not update last_visited
     assert updated_user["last_visited"] == (utc_now).replace(tzinfo=None)
-    assert lambda_response == USER_NOT_EXIST
+    assert lambda_response == response_handler(UserNotExistException().args[0])
