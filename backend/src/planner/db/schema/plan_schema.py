@@ -11,6 +11,7 @@ def enforce_plan_schema(db):
                 "name",
                 "date",
                 "owner",
+                "members"
             ],
             "properties": {
                 "name": {
@@ -20,8 +21,14 @@ def enforce_plan_schema(db):
                     "bsonType": "date",
                 },
                 "owner": {
-                    "bsonType": "string",
+                    "bsonType": "objectId",
                 },
+                "members": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "objectId",
+                    },
+                }
             },
         }
     }

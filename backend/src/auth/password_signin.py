@@ -8,6 +8,7 @@ from planner.http.exception import (
     HttpException,
     PasswordIncorrectException,
     UserNotExistException,
+    InvalidBodyException
 )
 from planner.db.repo.user_repo import UserRepo
 from planner.db.db_init import db_init
@@ -31,7 +32,10 @@ def lambda_handler(event, context):
     user_repo = db_setup()
 
     try:
-        body = json.loads(event["body"])
+        try:
+            body = json.loads(event["body"])
+        except json.JSONDecodeError as e:
+            raise InvalidBodyException from e
 
         post_body_validator(event, ["password", "email"])
 

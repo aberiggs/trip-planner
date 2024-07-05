@@ -4,6 +4,7 @@ import pytest
 import pymongo
 from planner.util.get_secret import get_secret
 from planner.db.repo.user_repo import UserRepo
+from planner.db.repo.plan_repo import PlanRepo
 
 
 @pytest.fixture(scope="session")
@@ -39,3 +40,10 @@ def user_repo(client, rollback_session):
     """Function providing fixture to use user repo"""
 
     return UserRepo(client.trip_planner, rollback_session)
+
+
+@pytest.fixture()
+def plan_repo(client, rollback_session):
+    """Function providing fixture to use user repo"""
+
+    return PlanRepo(client.trip_planner, rollback_session)

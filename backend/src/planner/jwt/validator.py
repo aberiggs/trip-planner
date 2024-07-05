@@ -2,16 +2,16 @@
 
 from datetime import datetime, timezone
 import jwt
-from planner.util.get_secret import get_secret
-
-SECRET_KEY = get_secret("auth", "jwt_secret_key")
-
 
 def jwt_validator(jwt_token):
     """Function that validates JWT token with secret stored in AWS"""
 
+    from planner.util.get_secret import get_secret
+
+    secret_key = get_secret("auth", "jwt_secret_key")
+
     try:
-        jwt.decode(jwt_token, key=SECRET_KEY, algorithms=["HS256"])
+        jwt.decode(jwt_token, key=secret_key, algorithms=["HS256"])
         header = jwt.get_unverified_header(jwt_token)
 
         if "exp" not in header:

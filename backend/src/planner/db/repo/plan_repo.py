@@ -17,3 +17,13 @@ class PlanRepo:
         """Function that inserts one plan"""
 
         return self.db.plans.insert_one(plan, session=self.session)
+
+    def find_one_by_id(self, _id):
+        """Function that finds a plan using id"""
+
+        return self.db.plans.find_one({"_id": _id}, session=self.session)
+
+    def find_all(self):
+        """Function that finds a plan using id"""
+
+        return self.db.plans.find(session=self.session)

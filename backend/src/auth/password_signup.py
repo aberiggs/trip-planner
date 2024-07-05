@@ -7,7 +7,7 @@ from planner.http.response import response_handler
 from planner.db.repo.user_repo import UserRepo
 from planner.db.db_init import db_init
 from planner.util.password import hash_password
-from planner.http.exception import HttpException, EmailUsedException
+from planner.http.exception import HttpException, EmailUsedException, InvalidBodyException
 
 
 def db_setup():
@@ -28,7 +28,10 @@ def lambda_handler(event, context):
     user_repo = db_setup()
 
     try:
-        body = json.loads(event["body"])
+        try:
+            body = json.loads(event["body"])
+        except json.JSONDecodeError as e:
+            raise InvalidBodyException from e
 
         body_validator_response = post_body_validator(
             event, ["password", "first_name", "last_name", "email"]
