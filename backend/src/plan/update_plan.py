@@ -3,7 +3,7 @@
 import datetime
 from http import HTTPStatus
 from bson.objectid import ObjectId
-from planner.http.validator import get_post_body
+from planner.http.validator import validate_get_post_body
 from planner.db.db_init import db_init
 from planner.middleware.check_user_signin import check_user_signin
 from planner.jwt.extractor import jwt_extractor
@@ -36,7 +36,7 @@ def lambda_handler(event, context):
     user_repo, plan_repo = db_setup()
 
     try:
-        body = get_post_body(
+        body = validate_get_post_body(
             event, ["plan_id", "name", "date", "owner", "members"]
         )
         check_user_signin(event)

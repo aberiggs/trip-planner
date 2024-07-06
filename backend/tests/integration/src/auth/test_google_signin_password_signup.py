@@ -2,51 +2,42 @@
 with password"""
 
 import json
-import datetime
-from datetime import timedelta
 from unittest.mock import patch
 import pytest
 from planner.http.exception import GoogleSignInFailedException
-from planner.util.password import hash_password
 from planner.http.response import response_handler
 
-utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0)
+# @pytest.fixture()
+# def google_user(mock_id_info, utc_now):
+#     """Function providing fixture to use mock google id_info"""
 
-mock_id_info = {
-    "given_name": "Bob",
-    "family_name": "George",
-    "picture": "picture.url",
-    "email": "bob.george@email.com",
-    "last_visited": utc_now,
-    "plans": [],
-}
-
-user_info = {
-    "first_name": mock_id_info["given_name"],
-    "last_name": mock_id_info["family_name"],
-    "picture": mock_id_info["picture"],
-    "email": mock_id_info["email"],
-    "password": hash_password("secure password"),
-    "last_visited": utc_now.replace(tzinfo=None),
-    "google_signup": False,
-    "plans": [],
-}
+#     return {
+#         "first_name": mock_id_info["given_name"],
+#         "last_name": mock_id_info["family_name"],
+#         "picture": mock_id_info["picture"],
+#         "email": mock_id_info["email"],
+#         "last_visited": utc_now.replace(tzinfo=None),
+#         "password": b"",
+#         "google_signup": False,
+#         "plans": [],
+#     }
 
 
-@pytest.fixture
-def patch_get_secret():
-    """Function that provides fixture to patch planner.util.get_secret.get_secret"""
+@pytest.fixture()
+def mock_id_info(utc_now, password_user):
+    """Function providing fixture to use mock google id_info"""
 
-    with patch(
-        "planner.util.get_secret.get_secret",
-        return_value="mock_secret",
-        autospec=True,
-    ) as m:
-        yield m
-
+    return {
+        "given_name": password_user["first_name"],
+        "family_name": password_user["last_name"],
+        "picture": password_user["picture"],
+        "email": password_user["email"],
+        "last_visited": utc_now,
+        "plans": [],
+    }
 
 @pytest.fixture
-def patch_google_verify_token():
+def patch_google_verify_token(mock_id_info):
     """Function that provides fixture to patch google.oauth2.id_token.verify_oauth2_token"""
 
     with patch(
@@ -55,19 +46,6 @@ def patch_google_verify_token():
         autospec=True,
     ) as m:
         yield m
-
-
-@pytest.fixture
-def patch_create_jwt_token():
-    """Function that provides fixture to patch planner.jwt.create_jwt_token.create_jwt_token"""
-
-    with patch(
-        "planner.jwt.create_jwt_token.create_jwt_token",
-        return_value="mock token",
-        autospec=True,
-    ) as m:
-        yield m
-
 
 @pytest.fixture
 def patch_db_setup(user_repo):
@@ -81,25 +59,15 @@ def patch_db_setup(user_repo):
     ) as m:
         yield m
 
-
-@pytest.fixture
-def patch_get_utc_now():
-    """Function that provides fixture to patch planner.util.get_utc_now.get_utc_now"""
-
-    with patch(
-        "planner.util.get_utc_now.get_utc_now",
-        return_value=utc_now + timedelta(hours=1),
-        autospec=True,
-    ) as m:
-        yield m
-
-
 def test_google_signin_password_signup(
     patch_get_utc_now,
     patch_db_setup,
     patch_create_jwt_token,
     patch_google_verify_token,
     patch_get_secret,
+    mock_id_info,
+    password_user,
+    utc_now,
     user_repo,
 ):
     """Function that tests whether google_auth blocks users signed up with password"""
@@ -107,9 +75,9 @@ def test_google_signin_password_signup(
     from auth.google_auth import lambda_handler
 
     # Expecting the user exists in the database before the user sign in
-    user_repo.insert_one(user_info)
-    original_user = user_repo.find_one_by_email(mock_id_info["email"])
-    assert original_user == user_info
+    user_repo.insert_one(password_user)
+    original_user = user_repo.find_one_by_email(password_user["email"])
+    assert original_user == password_user
 
     event = {
         "headers": {"Content-Type": "application/json"},
@@ -118,7 +86,7 @@ def test_google_signin_password_signup(
 
     lambda_response = lambda_handler(event, None)
 
-    updated_user = user_repo.find_one_by_email(mock_id_info["email"])
+    updated_user = user_repo.find_one_by_email(password_user["email"])
 
     # unsuccessful login should not update last_visited
     assert updated_user["last_visited"] == (utc_now).replace(tzinfo=None)

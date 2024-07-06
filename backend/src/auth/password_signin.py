@@ -10,7 +10,7 @@ from planner.http.exception import (
 from planner.db.repo.user_repo import UserRepo
 from planner.db.db_init import db_init
 from planner.util.password import check_password
-from planner.http.validator import get_post_body
+from planner.http.validator import validate_get_post_body
 
 
 def db_setup():
@@ -30,7 +30,7 @@ def lambda_handler(event, context):
     user_repo = db_setup()
 
     try:
-        body = get_post_body(event, ["password", "email"])
+        body = validate_get_post_body(event, ["password", "email"])
 
         utc_now = get_utc_now()
         email = body["email"]

@@ -1,7 +1,7 @@
 """Module providing the handler for password sign up endpoint"""
 
 from http import HTTPStatus
-from planner.http.validator import get_post_body
+from planner.http.validator import validate_get_post_body
 from planner.http.response import response_handler
 from planner.db.repo.user_repo import UserRepo
 from planner.db.db_init import db_init
@@ -30,7 +30,7 @@ def lambda_handler(event, context):
     user_repo = db_setup()
 
     try:
-        body = get_post_body(
+        body = validate_get_post_body(
             event, ["password", "first_name", "last_name", "email"]
         )
 

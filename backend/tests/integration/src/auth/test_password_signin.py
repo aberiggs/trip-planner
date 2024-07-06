@@ -1,46 +1,11 @@
 """Module providing integration test for signing in with password_signup"""
 
 import json
-import datetime
 from datetime import timedelta
 from http import HTTPStatus
 from unittest.mock import patch
 from planner.http.response import response_handler
-from planner.util.password import hash_password
 import pytest
-
-utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0)
-
-signin_info = {
-    "first_name": "Steve",
-    "last_name": "Bob",
-    "picture": "steve.bob.png",
-    "email": "steve.bob@email.com",
-    "password": "bob's secure password",
-}
-
-user_info = {
-    "first_name": signin_info["first_name"],
-    "last_name": signin_info["last_name"],
-    "picture": signin_info["picture"],
-    "email": signin_info["email"],
-    "password": hash_password(signin_info["password"]),
-    "last_visited": utc_now.replace(tzinfo=None),
-    "google_signup": False,
-    "plans": [],
-}
-
-
-@pytest.fixture
-def patch_create_jwt_token():
-    """Function that provides fixture to patch planner.jwt.create_jwt_token.create_jwt_token"""
-
-    with patch(
-        "planner.jwt.create_jwt_token.create_jwt_token",
-        return_value="mock token",
-        autospec=True,
-    ) as m:
-        yield m
 
 
 @pytest.fixture
@@ -57,7 +22,7 @@ def patch_db_setup(user_repo):
 
 
 @pytest.fixture
-def patch_get_utc_now():
+def patch_get_utc_now(utc_now):
     """Function that provides fixture to patch planner.util.get_utc_now.get_utc_now"""
 
     with patch(
@@ -68,10 +33,13 @@ def patch_get_utc_now():
         yield m
 
 
-def test_password_signin_valid_body(
+def test_password_signin(
     patch_get_utc_now,
     patch_db_setup,
     patch_create_jwt_token,
+    password_user,
+    password_signin_info,
+    utc_now,
     user_repo,
 ):
     """Function that tests whether password_signin properly sign in existing users"""
@@ -80,16 +48,16 @@ def test_password_signin_valid_body(
     from auth.password_signin import lambda_handler
 
     # Expecting the user exists in the database before the user sign in
-    user_repo.insert_one(user_info)
-    original_user = user_repo.find_one_by_email(signin_info["email"])
-    assert original_user == user_info
+    user_repo.insert_one(password_user)
+    original_user = user_repo.find_one_by_email(password_signin_info["email"])
+    assert original_user == password_user
 
     event = {
         "headers": {"Content-Type": "application/json"},
         "body": json.dumps(
             {
-                "email": signin_info["email"],
-                "password": signin_info["password"],
+                "email": password_signin_info["email"],
+                "password": password_signin_info["password"],
             }
         ),
     }
@@ -97,7 +65,7 @@ def test_password_signin_valid_body(
     jwt_token = create_jwt_token({})
     lambda_response = lambda_handler(event, None)
 
-    updated_user = user_repo.find_one_by_email(signin_info["email"])
+    updated_user = user_repo.find_one_by_email(password_signin_info["email"])
 
     # check if the last_visited is updated
     assert updated_user["last_visited"] == (

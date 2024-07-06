@@ -31,7 +31,7 @@ def header_validator(event, keys):
     )
 
 
-def get_post_body(event, keys):
+def validate_get_post_body(event, keys):
     """Function validating POST request body"""
 
     try:

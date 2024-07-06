@@ -3,7 +3,7 @@
 from http import HTTPStatus
 from google.auth.transport import requests
 from planner.util.get_secret import get_secret
-from planner.http.validator import get_post_body
+from planner.http.validator import validate_get_post_body
 from planner.http.response import response_handler
 from planner.http.exception import (
     HttpException,
@@ -36,7 +36,7 @@ def lambda_handler(event, context):
     user_repo = db_setup()
 
     try:
-        body = get_post_body(event, ["id_token", "client_type"])
+        body = validate_get_post_body(event, ["id_token", "client_type"])
 
         id_token = body["id_token"]
         client_type = body["client_type"]
@@ -58,6 +58,7 @@ def lambda_handler(event, context):
             raise InvalidClientTypeException from e
 
         utc_now = get_utc_now()
+
         first_name = id_info["given_name"]
         last_name = id_info["family_name"]
         picture = id_info["picture"]
