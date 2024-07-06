@@ -4,7 +4,7 @@ info:
   version: 1.0.0
 
 paths:
-  /google_auth:
+  /google/auth:
     post:
       operationId: googleAuth
       summary: Sign in/up with Google
@@ -211,7 +211,7 @@ paths:
                   value:
                       message: "The following fields are missing in header: {missing_keys}"
 
-  /create_plan:
+  /plan/create:
     post:
       operationId: createPlan
       summary: Create plan
@@ -272,7 +272,7 @@ paths:
                 user not signed in:
                   value:
                       message: you are not signed in
-  /update_plan:
+  /plan/update:
     post:
       operationId: updatePlan
       summary: Update plan
@@ -360,7 +360,7 @@ paths:
                   value:
                       message: action is not permitted with the give user
 
-  /delete_plan:
+  /plan/delete:
     post:
       operationId: deletePlan
       summary: Delete plan
@@ -426,7 +426,7 @@ paths:
                   value:
                       message: action is not permitted with the give user
 
-  /get_plans:
+  /plan/get:
     get:
       operationId: getPlans
       summary: Get all plans the current user is part of

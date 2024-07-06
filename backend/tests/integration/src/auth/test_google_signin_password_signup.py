@@ -7,21 +7,6 @@ import pytest
 from planner.http.exception import GoogleSignInFailedException
 from planner.http.response import handle_response
 
-# @pytest.fixture()
-# def google_user(mock_id_info, utc_now):
-#     """Function providing fixture to use mock google id_info"""
-
-#     return {
-#         "first_name": mock_id_info["given_name"],
-#         "last_name": mock_id_info["family_name"],
-#         "picture": mock_id_info["picture"],
-#         "email": mock_id_info["email"],
-#         "last_visited": utc_now.replace(tzinfo=None),
-#         "password": b"",
-#         "google_signup": False,
-#         "plans": [],
-#     }
-
 
 @pytest.fixture()
 def mock_id_info(utc_now, password_user):
@@ -49,22 +34,9 @@ def patch_google_verify_token(mock_id_info):
         yield m
 
 
-@pytest.fixture
-def patch_db_setup(user_repo):
-    """Function that provides fixture to patch db_setup so that transactions
-    are properly rolled back at the end of the test"""
-
-    with patch(
-        "auth.google_auth.db_setup",
-        return_value=user_repo,
-        autospec=True,
-    ) as m:
-        yield m
-
-
 def test_google_signin_password_signup(
     patch_get_utc_now,
-    patch_db_setup,
+    patch_get_session_repos,
     patch_create_jwt_token,
     patch_google_verify_token,
     patch_get_secret,

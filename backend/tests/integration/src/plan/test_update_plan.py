@@ -1,29 +1,14 @@
 """Module providing integration test for updating plan with valid body"""
 
 import json
-from unittest.mock import patch
 from bson.objectid import ObjectId
-import pytest
 from planner.date.get_plan_date import get_plan_date
 from planner.db.serialize.jsonify_plan import jsonify_plan
 from planner.http.response import handle_response
 from planner.http.exception import ForbiddenException
 
-@pytest.fixture
-def patch_db_setup(user_repo, plan_repo):
-    """Function that provides fixture to patch db_setup so that transactions
-    are properly rolled back at the end of the test"""
-
-    with patch(
-        "plan.update_plan.db_setup",
-        return_value=[user_repo, plan_repo],
-        autospec=True,
-    ) as m:
-        yield m
-
-
 def test_update_plan(
-        patch_db_setup,
+        patch_get_session_repos,
         user_repo,
         plan_repo,
         user,
@@ -78,7 +63,7 @@ def test_update_plan(
 
 
 def test_update_plan_user_not_a_member(
-        patch_db_setup,
+        patch_get_session_repos,
         user_repo,
         plan_repo,
         user,
@@ -138,7 +123,7 @@ def test_update_plan_user_not_a_member(
 
 
 def test_update_plan_user_not_owner(
-        patch_db_setup,
+        patch_get_session_repos,
         user_repo,
         plan_repo,
         user,

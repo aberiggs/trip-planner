@@ -3,19 +3,8 @@
 from http import HTTPStatus
 from planner.http.validator import validate_get_post_body
 from planner.http.response import handle_response
-from planner.db.repo.user_repo import UserRepo
-from planner.db.db_init import db_init
 from planner.util.password import hash_password
 from planner.http.exception import HttpException, EmailUsedException
-
-
-def db_setup():
-    """Function thaht sets up mongodb client, session, schema enforcement"""
-
-    client, session = db_init()
-    db = client.trip_planner
-    user_repo = UserRepo(db, session)
-    return user_repo
 
 
 def lambda_handler(event, context):
@@ -23,8 +12,10 @@ def lambda_handler(event, context):
 
     from planner.jwt.create_jwt_token import create_jwt_token
     from planner.util.get_utc_now import get_utc_now
+    from planner.db.repo.get_session_repos import get_session_repos
 
-    user_repo = db_setup()
+    repos = get_session_repos()
+    user_repo = repos["user"]
 
     try:
         body = validate_get_post_body(

@@ -7,20 +7,6 @@ from unittest.mock import patch
 from planner.http.response import handle_response
 import pytest
 
-
-@pytest.fixture
-def patch_db_setup(user_repo):
-    """Function that provides fixture to patch db_setup so that transactions
-    are properly rolled back at the end of the test"""
-
-    with patch(
-        "auth.password_signin.db_setup",
-        return_value=user_repo,
-        autospec=True,
-    ) as m:
-        yield m
-
-
 @pytest.fixture
 def patch_get_utc_now(utc_now):
     """Function that provides fixture to patch planner.util.get_utc_now.get_utc_now"""
@@ -35,7 +21,7 @@ def patch_get_utc_now(utc_now):
 
 def test_password_signin(
     patch_get_utc_now,
-    patch_db_setup,
+    patch_get_session_repos,
     patch_create_jwt_token,
     password_user,
     password_signin_info,

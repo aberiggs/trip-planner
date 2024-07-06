@@ -1,26 +1,12 @@
 """Module providing integration test for creating plan with valid body"""
 
 import json
-from unittest.mock import patch
 from bson.objectid import ObjectId
-import pytest
 from planner.db.serialize.jsonify_plan import jsonify_plan
-
-@pytest.fixture
-def patch_db_setup(user_repo, plan_repo):
-    """Function that provides fixture to patch db_setup so that transactions
-    are properly rolled back at the end of the test"""
-
-    with patch(
-        "plan.create_plan.db_setup",
-        return_value=[user_repo, plan_repo],
-        autospec=True,
-    ) as m:
-        yield m
 
 
 def test_create_plan(
-        patch_db_setup,
+        patch_get_session_repos,
         user_repo,
         plan_repo,
         user,

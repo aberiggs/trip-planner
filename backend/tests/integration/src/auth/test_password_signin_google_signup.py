@@ -2,28 +2,12 @@
 with google"""
 
 import json
-from unittest.mock import patch
-import pytest
 from planner.http.response import handle_response
 from planner.http.exception import UserNotExistException
 
-
-@pytest.fixture
-def patch_db_setup(user_repo):
-    """Function that provides fixture to patch db_setup so that transactions
-    are properly rolled back at the end of the test"""
-
-    with patch(
-        "auth.password_signin.db_setup",
-        return_value=user_repo,
-        autospec=True,
-    ) as m:
-        yield m
-
-
 def test_password_signin_google_signup(
     patch_get_utc_now,
-    patch_db_setup,
+    patch_get_session_repos,
     patch_create_jwt_token,
     patch_google_verify_token,
     patch_get_secret,

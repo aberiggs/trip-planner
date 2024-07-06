@@ -1,28 +1,12 @@
 """Module providing integration test for deleting plan"""
 
 import json
-from unittest.mock import patch
-import pytest
 from planner.date.get_plan_date import get_plan_date
 from planner.http.response import handle_response
 from planner.http.exception import ForbiddenException
 
-
-@pytest.fixture
-def patch_db_setup(user_repo, plan_repo):
-    """Function that provides fixture to patch db_setup so that transactions
-    are properly rolled back at the end of the test"""
-
-    with patch(
-        "plan.delete_plan.db_setup",
-        return_value=[user_repo, plan_repo],
-        autospec=True,
-    ) as m:
-        yield m
-
-
 def test_delete_plan(
-        patch_db_setup,
+        patch_get_session_repos,
         user_repo,
         plan_repo,
         user,
@@ -74,7 +58,7 @@ def test_delete_plan(
 
 
 def test_member_delete_plan(
-        patch_db_setup,
+        patch_get_session_repos,
         user_repo,
         plan_repo,
         user,
@@ -89,6 +73,9 @@ def test_member_delete_plan(
 
     user_repo.insert_one(user)
     user_repo.insert_one(user2)
+
+    assert user_repo.find_one_by_id(user["_id"])
+
     first_name = user["first_name"]
     last_name = user["last_name"]
 

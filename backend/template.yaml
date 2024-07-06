@@ -67,7 +67,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
-            Path: /google_auth
+            Path: /google/auth
             Method: POST
 
   TestAuthFunction:
@@ -93,7 +93,7 @@ Resources:
     Properties:
       FunctionName: 'CreateActivityFunction'
       CodeUri: src/
-      Handler: create_activity.lambda_handler
+      Handler: activity.create_activity.lambda_handler
       Runtime: python3.12
       Architectures:
         - x86_64
@@ -103,7 +103,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
-            Path: /create_activity
+            Path: /activity/create
             Method: POST
 
   CreatePlanFunction:
@@ -121,7 +121,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
-            Path: /create_plan
+            Path: /plan/create
             Method: POST
 
   UpdatePlanFunction:
@@ -139,7 +139,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
-            Path: /update_plan
+            Path: /plan/update
             Method: POST
 
   DeletePlanFunction:
@@ -157,7 +157,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
-            Path: /delete_plan
+            Path: /plan/delete
             Method: POST
 
   GetPlansFunction:
@@ -175,7 +175,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
-            Path: /get_plans
+            Path: /plan/get
             Method: GET
 
   MyRestApi:

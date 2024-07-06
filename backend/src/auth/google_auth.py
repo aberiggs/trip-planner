@@ -11,19 +11,9 @@ from planner.http.exception import (
     InvalidClientTypeException,
     GoogleSignInFailedException,
 )
-from planner.db.repo.user_repo import UserRepo
-from planner.db.db_init import db_init
 
 WEB_CLIENT_ID = get_secret("auth", "web_client_id")
 IOS_CLIENT_ID = get_secret("auth", "ios_client_id")
-
-
-def db_setup():
-    """Function that sets up mongodb client, session, schema enforcement"""
-    client, session = db_init()
-    db = client.trip_planner
-    user_repo = UserRepo(db, session)
-    return user_repo
 
 
 def lambda_handler(event, context):
@@ -32,8 +22,10 @@ def lambda_handler(event, context):
     from google.oauth2.id_token import verify_oauth2_token
     from planner.jwt.create_jwt_token import create_jwt_token
     from planner.util.get_utc_now import get_utc_now
+    from planner.db.repo.get_session_repos import get_session_repos
 
-    user_repo = db_setup()
+    repos = get_session_repos()
+    user_repo = repos["user"]
 
     try:
         body = validate_get_post_body(event, ["id_token", "client_type"])
