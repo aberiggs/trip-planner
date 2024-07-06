@@ -4,7 +4,7 @@ with google"""
 import json
 from unittest.mock import patch
 import pytest
-from planner.http.response import response_handler
+from planner.http.response import handle_response
 from planner.http.exception import UserNotExistException
 
 @pytest.fixture
@@ -54,4 +54,4 @@ def test_password_signin_google_signup(
 
     # unsuccessful login should not update last_visited
     assert updated_user["last_visited"] == (utc_now).replace(tzinfo=None)
-    assert lambda_response == response_handler(UserNotExistException().args[0])
+    assert lambda_response == handle_response(UserNotExistException().args[0])

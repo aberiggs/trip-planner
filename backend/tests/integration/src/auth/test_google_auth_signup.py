@@ -3,7 +3,7 @@
 import json
 from http import HTTPStatus
 from unittest.mock import patch
-from planner.http.response import response_handler
+from planner.http.response import handle_response
 import pytest
 
 @pytest.fixture
@@ -48,6 +48,6 @@ def test_google_auth_signup(
     new_user.pop("_id")
 
     assert new_user == google_user
-    assert lambda_response == response_handler(
+    assert lambda_response == handle_response(
         {"code": HTTPStatus.OK.value, "body": {"jwt": jwt_token}}
     )

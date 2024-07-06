@@ -6,7 +6,7 @@ from planner.http.exception import HttpException
 from planner.http.exception import InvalidBodyException
 
 
-def header_validator(event, keys):
+def validate_header(event, keys):
     """Function validating request headers"""
 
     headers = event["headers"]

@@ -4,13 +4,13 @@ import datetime
 from http import HTTPStatus
 from planner.db.db_init import db_init
 from planner.middleware.check_user_signin import check_user_signin
-from planner.jwt.extractor import jwt_extractor
+from planner.jwt.extractor import extract_jwt
 from planner.jwt.get_jwt_token import get_jwt_token
 from planner.http.exception import HttpException, ResourceNotFoundException
-from planner.http.response import response_handler
+from planner.http.response import handle_response
 from planner.db.repo.user_repo import UserRepo
 from planner.db.repo.plan_repo import PlanRepo
-from planner.db.serialize.plan_serializer import plan_serializer
+from planner.db.serialize.jsonify_plan import jsonify_plan
 
 utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0)
 
@@ -32,7 +32,7 @@ def lambda_handler(event, context):
     try:
         check_user_signin(event)
 
-        jwt_payload = jwt_extractor(get_jwt_token(event))
+        jwt_payload = extract_jwt(get_jwt_token(event))
 
         curr_user = user_repo.find_one_by_email(jwt_payload["email"])
         if not curr_user:
@@ -41,9 +41,9 @@ def lambda_handler(event, context):
         plans = []
         for plan_id in curr_user["plans"]:
             found = plan_repo.find_one_by_id(plan_id)
-            plans.append(plan_serializer(found))
+            plans.append(jsonify_plan(found))
 
-        return response_handler({"code": HTTPStatus.OK.value, "body": plans})
+        return handle_response({"code": HTTPStatus.OK.value, "body": plans})
 
     except HttpException as e:
-        return response_handler(e.args[0])
+        return handle_response(e.args[0])

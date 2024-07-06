@@ -4,7 +4,7 @@ import json
 from typing import Dict, Any
 
 
-def response_handler(response: Dict[str, Any]) -> Dict[str, Any]:
+def handle_response(response: Dict[str, Any]) -> Dict[str, Any]:
     """Function that returns http reponse with CORS policy enabled"""
 
     if "code" not in response or "body" not in response:

@@ -1,7 +1,7 @@
 """Module providing the handler for password sign in endpoint"""
 
 from http import HTTPStatus
-from planner.http.response import response_handler
+from planner.http.response import handle_response
 from planner.http.exception import (
     HttpException,
     PasswordIncorrectException,
@@ -61,10 +61,10 @@ def lambda_handler(event, context):
                     "name": f"{first_name} {last_name}",
                 }
             )
-            return response_handler(
+            return handle_response(
                 {"code": HTTPStatus.OK, "body": {"jwt": jwt_token}}
             )
 
         raise PasswordIncorrectException
     except HttpException as e:
-        return response_handler(e.args[0])
+        return handle_response(e.args[0])

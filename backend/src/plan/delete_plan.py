@@ -6,14 +6,14 @@ from bson.objectid import ObjectId
 from planner.http.validator import validate_get_post_body
 from planner.db.db_init import db_init
 from planner.middleware.check_user_signin import check_user_signin
-from planner.jwt.extractor import jwt_extractor
+from planner.jwt.extractor import extract_jwt
 from planner.jwt.get_jwt_token import get_jwt_token
 from planner.http.exception import (
     HttpException,
     ResourceNotFoundException,
     ForbiddenException,
 )
-from planner.http.response import response_handler
+from planner.http.response import handle_response
 from planner.db.repo.user_repo import UserRepo
 from planner.db.repo.plan_repo import PlanRepo
 
@@ -38,7 +38,7 @@ def lambda_handler(event, context):
         body = validate_get_post_body(event, ["plan_id"])
         check_user_signin(event)
 
-        jwt_payload = jwt_extractor(get_jwt_token(event))
+        jwt_payload = extract_jwt(get_jwt_token(event))
         plan_id = ObjectId(body["plan_id"])
 
         curr_user = user_repo.find_one_by_email(jwt_payload["email"])
@@ -67,7 +67,7 @@ def lambda_handler(event, context):
 
         plan_repo.delete_one_by_id(plan_id)
 
-        return response_handler(
+        return handle_response(
             {
                 "code": HTTPStatus.NO_CONTENT.value,
                 "body": {"message": "plan deleted"},
@@ -75,4 +75,4 @@ def lambda_handler(event, context):
         )
 
     except HttpException as e:
-        return response_handler(e.args[0])
+        return handle_response(e.args[0])

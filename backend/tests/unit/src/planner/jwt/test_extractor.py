@@ -19,10 +19,10 @@ class TestExtractor(TestCase):
         )
         self.patcher.start()
 
-    def test_jwt_extractor_normal(self) -> None:
+    def test_extract_jwt_normal(self) -> None:
         """Function that tests whether jwt validator catches token signed with a different key"""
 
-        from planner.jwt.extractor import jwt_extractor
+        from planner.jwt.extractor import extract_jwt
         from planner.jwt.create_jwt_token import create_jwt_token
 
         payload = {
@@ -32,12 +32,12 @@ class TestExtractor(TestCase):
         }
 
         token = create_jwt_token(payload)
-        assert jwt_extractor(token) == payload
+        assert extract_jwt(token) == payload
 
-    def test_jwt_extractor_signed_with_diff_secret(self) -> None:
+    def test_extract_jwt_signed_with_diff_secret(self) -> None:
         """Function that tests whether jwt extractor doesn't validate the token"""
 
-        from planner.jwt.extractor import jwt_extractor
+        from planner.jwt.extractor import extract_jwt
 
         payload = {
             "email": "chiweilien@gmail.com",
@@ -53,9 +53,9 @@ class TestExtractor(TestCase):
         )
 
         try:
-            extracted_payload = jwt_extractor(token)
+            extracted_payload = extract_jwt(token)
         except Exception as e:
-            pytest.fail(f"response_handler raised an exception: {e}")
+            pytest.fail(f"handle_response raised an exception: {e}")
 
         assert extracted_payload == payload
 

@@ -4,7 +4,7 @@ from http import HTTPStatus
 from google.auth.transport import requests
 from planner.util.get_secret import get_secret
 from planner.http.validator import validate_get_post_body
-from planner.http.response import response_handler
+from planner.http.response import handle_response
 from planner.http.exception import (
     HttpException,
     InvalidGoogleIdTokenException,
@@ -105,8 +105,8 @@ def lambda_handler(event, context):
         }
 
         jwt_token = create_jwt_token(token_payload)
-        return response_handler(
+        return handle_response(
             {"code": HTTPStatus.OK, "body": {"jwt": jwt_token}}
         )
     except HttpException as e:
-        return response_handler(e.args[0])
+        return handle_response(e.args[0])

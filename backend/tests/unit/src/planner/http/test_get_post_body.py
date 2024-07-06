@@ -4,7 +4,7 @@ import json
 from unittest import TestCase
 from http import HTTPStatus
 import pytest
-from planner.http.validator import header_validator, validate_get_post_body
+from planner.http.validator import validate_header, validate_get_post_body
 from planner.http.exception import HttpException
 from planner.http.exception import InvalidBodyException
 
@@ -15,7 +15,7 @@ class TestValidator(TestCase):
     def setUp(self) -> None:
         pass
 
-    def test_header_validator_missing_header(self) -> None:
+    def test_validate_header_missing_header(self) -> None:
         """Function that tests whether header validator catches the missing header"""
 
         expected_keys = ["Authentication", "Content-Type"]
@@ -23,7 +23,7 @@ class TestValidator(TestCase):
         event = {"headers": {"Content-Type": "application/json"}}
 
         with pytest.raises(HttpException) as e:
-            header_validator(event, expected_keys)
+            validate_header(event, expected_keys)
             assert e.args[0] == {
                 "code": HTTPStatus.BAD_REQUEST.value,
                 "body": {
@@ -31,7 +31,7 @@ class TestValidator(TestCase):
                 },
             }
 
-    def test_header_validator_missing_headers(self) -> None:
+    def test_validate_header_missing_headers(self) -> None:
         """Function that tests whether header validator catches missing headers"""
 
         expected_keys = ["Authentication", "Content-Type"]
@@ -43,7 +43,7 @@ class TestValidator(TestCase):
         )
 
         with pytest.raises(HttpException) as e:
-            header_validator(event, expected_keys)
+            validate_header(event, expected_keys)
             assert e.args[0] == {
                 "code": HTTPStatus.BAD_REQUEST.value,
                 "body": {
@@ -51,7 +51,7 @@ class TestValidator(TestCase):
                 },
             }
 
-    def test_header_validator_no_missing_header(self) -> None:
+    def test_validate_header_no_missing_header(self) -> None:
         """Function that tests whether header validator returns None when there are
         no missing headers"""
 
@@ -60,9 +60,9 @@ class TestValidator(TestCase):
         event = {"headers": {"Authentication"}}
 
         try:
-            header_validator(event, expected_keys)
+            validate_header(event, expected_keys)
         except Exception as e:
-            pytest.fail(f"header_validator raised an exception: {e}")
+            pytest.fail(f"validate_header raised an exception: {e}")
 
     def test_post_body_validator_missing_key(self) -> None:
         """Function that tests whether get_post_body catches the missing key"""

@@ -6,7 +6,7 @@ from unittest.mock import patch
 import pytest
 from planner.util.password import hash_password
 from planner.date.get_plan_date import get_plan_date
-from planner.db.serialize.plan_serializer import plan_serializer
+from planner.db.serialize.jsonify_plan import jsonify_plan
 
 utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0)
 
@@ -103,5 +103,5 @@ def test_update_plan_valid_body(patch_db_setup, user_repo, plan_repo):
 
     result = json.loads(lambda_response["body"])
 
-    assert plan_serializer(plan) in result
-    assert plan_serializer(plan2) in result
+    assert jsonify_plan(plan) in result
+    assert jsonify_plan(plan2) in result

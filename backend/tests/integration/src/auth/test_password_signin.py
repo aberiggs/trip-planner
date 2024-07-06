@@ -4,7 +4,7 @@ import json
 from datetime import timedelta
 from http import HTTPStatus
 from unittest.mock import patch
-from planner.http.response import response_handler
+from planner.http.response import handle_response
 import pytest
 
 
@@ -71,6 +71,6 @@ def test_password_signin(
     assert updated_user["last_visited"] == (
         utc_now + timedelta(hours=1)
     ).replace(tzinfo=None)
-    assert lambda_response == response_handler(
+    assert lambda_response == handle_response(
         {"code": HTTPStatus.OK.value, "body": {"jwt": jwt_token}}
     )

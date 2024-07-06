@@ -3,7 +3,7 @@
 from unittest import TestCase
 from http import HTTPStatus
 import pytest
-from planner.http.response import response_handler
+from planner.http.response import handle_response
 
 
 class TestResponse(TestCase):
@@ -12,7 +12,7 @@ class TestResponse(TestCase):
     def setUp(self) -> None:
         pass
 
-    def test_response_handler_normal(self) -> None:
+    def test_handle_response_normal(self) -> None:
         """Function that tests whether response handler won't raise any exception
         when response is normal"""
 
@@ -22,25 +22,25 @@ class TestResponse(TestCase):
         }
 
         try:
-            response_handler(response)
+            handle_response(response)
         except Exception as e:
-            pytest.fail(f"response_handler raised an exception: {e}")
+            pytest.fail(f"handle_response raised an exception: {e}")
 
-    def test_response_handler_without_code(self) -> None:
+    def test_handle_response_without_code(self) -> None:
         """Function that tests whether response handler catches the missing key: code"""
 
         response = {"body": {"message": "fake response"}}
 
         with pytest.raises(ValueError):
-            response_handler(response)
+            handle_response(response)
 
-    def test_response_handler_without_body(self) -> None:
+    def test_handle_response_without_body(self) -> None:
         """Function that tests whether response handler catches the missing key: body"""
 
         response = {"code": HTTPStatus.OK.value}
 
         with pytest.raises(ValueError):
-            response_handler(response)
+            handle_response(response)
 
     def tearDown(self) -> None:
         pass

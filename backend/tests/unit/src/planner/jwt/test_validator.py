@@ -18,10 +18,10 @@ class TestValidator(TestCase):
         )
         self.patcher.start()
 
-    def test_jwt_validator_signed_with_diff_secret(self) -> None:
+    def test_validate_jwt_signed_with_diff_secret(self) -> None:
         """Function that tests whether jwt validator catches token signed with a different key"""
 
-        from planner.jwt.validator import jwt_validator
+        from planner.jwt.validator import validate_jwt
 
         payload = {
             "email": "chiweilien@gmail.com",
@@ -36,13 +36,13 @@ class TestValidator(TestCase):
             headers={"exp": int(time.time()) + 864000},  # ten days
         )
 
-        assert jwt_validator(token) is False
+        assert validate_jwt(token) is False
 
-    def test_jwt_validator_signed_with_same_secret(self) -> None:
+    def test_validate_jwt_signed_with_same_secret(self) -> None:
         """Function that tests whether jwt validator returns true when token is
         signed with the same key"""
 
-        from planner.jwt.validator import jwt_validator
+        from planner.jwt.validator import validate_jwt
         from planner.jwt.create_jwt_token import create_jwt_token
 
         payload = {
@@ -53,12 +53,12 @@ class TestValidator(TestCase):
 
         token = create_jwt_token(payload, int(time.time()) + 864000)  # ten days
 
-        assert jwt_validator(token) is True
+        assert validate_jwt(token) is True
 
-    def test_jwt_validator_expired_jwt(self) -> None:
+    def test_validate_jwt_expired_jwt(self) -> None:
         """Function that tests whether jwt validator catches expired token"""
 
-        from planner.jwt.validator import jwt_validator
+        from planner.jwt.validator import validate_jwt
         from planner.jwt.create_jwt_token import create_jwt_token
 
         payload = {
@@ -69,13 +69,13 @@ class TestValidator(TestCase):
 
         token = create_jwt_token(payload, int(time.time()) - 10)
 
-        assert jwt_validator(token) is False
+        assert validate_jwt(token) is False
 
-    def test_jwt_validator_no_exp(self) -> None:
+    def test_validate_jwt_no_exp(self) -> None:
         """Function that tests whether jwt validator returns true when token
         hasn't expired"""
 
-        from planner.jwt.validator import jwt_validator
+        from planner.jwt.validator import validate_jwt
 
         payload = {
             "email": "chiweilien@gmail.com",
@@ -89,7 +89,7 @@ class TestValidator(TestCase):
             algorithm="HS256",
         )
 
-        assert jwt_validator(token) is False
+        assert validate_jwt(token) is False
 
     def tearDown(self) -> None:
         self.patcher.stop()

@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import jwt
 
 
-def jwt_validator(jwt_token):
+def validate_jwt(jwt_token):
     """Function that validates JWT token with secret stored in AWS"""
 
     from planner.util.get_secret import get_secret

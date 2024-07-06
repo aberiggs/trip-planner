@@ -1,6 +1,6 @@
-"""Module providing serializer for plans"""
+"""Module providing function to jsonify plans"""
 
-def plan_serializer(plan):
+def jsonify_plan(plan):
     """Function that serializes plan"""
 
     plan["date"] = plan["date"].strftime("%m/%d/%y")

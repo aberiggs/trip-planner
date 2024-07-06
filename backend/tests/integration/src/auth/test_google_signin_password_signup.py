@@ -5,7 +5,7 @@ import json
 from unittest.mock import patch
 import pytest
 from planner.http.exception import GoogleSignInFailedException
-from planner.http.response import response_handler
+from planner.http.response import handle_response
 
 # @pytest.fixture()
 # def google_user(mock_id_info, utc_now):
@@ -90,6 +90,6 @@ def test_google_signin_password_signup(
 
     # unsuccessful login should not update last_visited
     assert updated_user["last_visited"] == (utc_now).replace(tzinfo=None)
-    assert lambda_response == response_handler(
+    assert lambda_response == handle_response(
         GoogleSignInFailedException().args[0]
     )
