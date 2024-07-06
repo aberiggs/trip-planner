@@ -1,17 +1,15 @@
 """Module providing the handler for google authentication (sign in/up) endpoint"""
 
-import json
 from http import HTTPStatus
 from google.auth.transport import requests
 from planner.util.get_secret import get_secret
-from planner.http.validator import post_body_validator
+from planner.http.validator import get_post_body
 from planner.http.response import response_handler
 from planner.http.exception import (
     HttpException,
     InvalidGoogleIdTokenException,
     InvalidClientTypeException,
     GoogleSignInFailedException,
-    InvalidBodyException,
 )
 from planner.db.repo.user_repo import UserRepo
 from planner.db.db_init import db_init
@@ -38,12 +36,7 @@ def lambda_handler(event, context):
     user_repo = db_setup()
 
     try:
-        try:
-            body = json.loads(event["body"])
-        except json.JSONDecodeError as e:
-            raise InvalidBodyException from e
-
-        post_body_validator(event, ["id_token", "client_type"])
+        body = get_post_body(event, ["id_token", "client_type"])
 
         id_token = body["id_token"]
         client_type = body["client_type"]
@@ -92,7 +85,7 @@ def lambda_handler(event, context):
             if not found_user["google_signup"]:
                 raise GoogleSignInFailedException
 
-            user_repo.update_one(
+            user_repo.update_one_by_email(
                 email,
                 {
                     "$set": {

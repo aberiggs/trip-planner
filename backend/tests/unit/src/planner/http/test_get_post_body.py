@@ -4,7 +4,7 @@ import json
 from unittest import TestCase
 from http import HTTPStatus
 import pytest
-from planner.http.validator import header_validator, post_body_validator
+from planner.http.validator import header_validator, get_post_body
 from planner.http.exception import HttpException
 
 
@@ -64,7 +64,7 @@ class TestValidator(TestCase):
             pytest.fail(f"header_validator raised an exception: {e}")
 
     def test_post_body_validator_missing_key(self) -> None:
-        """Function that tests whether post body validator catches the missing key"""
+        """Function that tests whether get_post_body catches the missing key"""
 
         expected_keys = ["name", "email", "addr"]
 
@@ -76,7 +76,7 @@ class TestValidator(TestCase):
         }
 
         with pytest.raises(HttpException) as e:
-            header_validator(event, expected_keys)
+            get_post_body(event, expected_keys)
             assert e.args[0] == {
                 "code": HTTPStatus.BAD_REQUEST.value,
                 "body": {
@@ -85,7 +85,7 @@ class TestValidator(TestCase):
             }
 
     def test_post_body_validator_missing_keys(self) -> None:
-        """Function that tests whether post body validator catches missing keys"""
+        """Function that tests whether get_post_body catches missing keys"""
 
         expected_keys = ["name", "email", "addr"]
 
@@ -101,7 +101,7 @@ class TestValidator(TestCase):
         missing_keys = ", ".join(sorted(list(["email", "addr"])))
 
         with pytest.raises(HttpException) as e:
-            header_validator(event, expected_keys)
+            get_post_body(event, expected_keys)
             assert e.args[0] == {
                 "code": HTTPStatus.BAD_REQUEST.value,
                 "body": {
@@ -110,7 +110,7 @@ class TestValidator(TestCase):
             }
 
     def test_post_body_validator_no_missing_keys(self) -> None:
-        """Function that tests whether post body validator returns None when there
+        """Function that tests whether get_post_body returns None when there
         are no missing keys"""
 
         expected_keys = ["name", "email", "addr"]
@@ -126,7 +126,7 @@ class TestValidator(TestCase):
             ),
         }
         try:
-            post_body_validator(event, expected_keys)
+            get_post_body(event, expected_keys)
         except Exception as e:
             pytest.fail(f"post_body_validator raised an exception: {e}")
 

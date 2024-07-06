@@ -68,7 +68,7 @@ def patch_create_jwt_token():
 
 @pytest.fixture
 def patch_db_setup(user_repo):
-    """Function that provides fixture to patch auth.db_setup so that transactions
+    """Function that provides fixture to patch db_setup so that transactions
     are properly rolled back at the end of the test"""
 
     with patch(

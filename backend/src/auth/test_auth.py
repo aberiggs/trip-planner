@@ -17,8 +17,16 @@ def lambda_handler(event, context):
     jwt_token = event["headers"]["Authorization"].split(" ")[1].encode("utf-8")
 
     if jwt_validator(jwt_token):
-        return response_handler(HTTPStatus.OK, {"message": "you are logged in"})
+        return response_handler(
+            {
+                "code": HTTPStatus.OK.value,
+                "body": {"message": "you are logged in"},
+            }
+        )
 
     return response_handler(
-        HTTPStatus.UNAUTHORIZED, {"message": "you are not logged in"}
+        {
+            "code": HTTPStatus.UNAUTHORIZED.value,
+            "body": {"message": "you are not logged in"},
+        }
     )

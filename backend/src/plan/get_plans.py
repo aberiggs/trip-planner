@@ -1,18 +1,13 @@
-"""Module providing the handler for create plan endpoint"""
+"""Module providing the handler for update plan endpoint"""
 
 import datetime
 from http import HTTPStatus
-from planner.http.validator import get_post_body
 from planner.db.db_init import db_init
 from planner.middleware.check_user_signin import check_user_signin
 from planner.jwt.extractor import jwt_extractor
 from planner.jwt.get_jwt_token import get_jwt_token
-from planner.http.exception import (
-    HttpException,
-    ResourceNotFoundException,
-)
+from planner.http.exception import HttpException, ResourceNotFoundException
 from planner.http.response import response_handler
-from planner.date.get_plan_date import get_plan_date
 from planner.db.repo.user_repo import UserRepo
 from planner.db.repo.plan_repo import PlanRepo
 from planner.db.serialize.plan_serializer import plan_serializer
@@ -21,7 +16,7 @@ utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0)
 
 
 def db_setup():
-    """Function thaht sets up mongodb client, session, schema enforcement"""
+    """Function thaht sets up user and plan repos"""
     client, session = db_init()
     db = client.trip_planner
     user_repo = UserRepo(db, session)
@@ -30,12 +25,11 @@ def db_setup():
 
 
 def lambda_handler(event, context):
-    """Lambda handler that stores a plan to the database"""
+    """Lambda handler that update a plan in the database"""
 
     user_repo, plan_repo = db_setup()
 
     try:
-        body = get_post_body(event, ["name", "date"])
         check_user_signin(event)
 
         jwt_payload = jwt_extractor(get_jwt_token(event))
@@ -44,28 +38,12 @@ def lambda_handler(event, context):
         if not curr_user:
             raise ResourceNotFoundException
 
-        plan = {
-            "name": body["name"],
-            "date": get_plan_date(body["date"]),
-            "owner": curr_user["_id"],
-            "members": [curr_user["_id"]],
-        }
-        plan_repo.insert_one(plan)
-        user_repo.update_one_by_email(
-            curr_user["email"],
-            {
-                "$set": {
-                    "last_visited": utc_now,
-                },
-                "$push": {"plans": plan["_id"]},
-            },
-        )
+        plans = []
+        for plan_id in curr_user["plans"]:
+            found = plan_repo.find_one_by_id(plan_id)
+            plans.append(plan_serializer(found))
 
-        plan_serializer(plan)
-
-        return response_handler(
-            {"code": HTTPStatus.CREATED.value, "body": plan}
-        )
+        return response_handler({"code": HTTPStatus.OK.value, "body": plans})
 
     except HttpException as e:
         return response_handler(e.args[0])

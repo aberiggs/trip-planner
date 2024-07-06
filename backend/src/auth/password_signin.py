@@ -1,18 +1,16 @@
 """Module providing the handler for password sign in endpoint"""
 
-import json
 from http import HTTPStatus
-from planner.http.validator import post_body_validator
 from planner.http.response import response_handler
 from planner.http.exception import (
     HttpException,
     PasswordIncorrectException,
     UserNotExistException,
-    InvalidBodyException
 )
 from planner.db.repo.user_repo import UserRepo
 from planner.db.db_init import db_init
 from planner.util.password import check_password
+from planner.http.validator import get_post_body
 
 
 def db_setup():
@@ -32,12 +30,7 @@ def lambda_handler(event, context):
     user_repo = db_setup()
 
     try:
-        try:
-            body = json.loads(event["body"])
-        except json.JSONDecodeError as e:
-            raise InvalidBodyException from e
-
-        post_body_validator(event, ["password", "email"])
+        body = get_post_body(event, ["password", "email"])
 
         utc_now = get_utc_now()
         email = body["email"]
@@ -52,7 +45,7 @@ def lambda_handler(event, context):
         last_name = found_user["last_name"]
 
         if check_password(password.encode("utf-8"), found_user["password"]):
-            user_repo.update_one(
+            user_repo.update_one_by_email(
                 email,
                 {
                     "$set": {

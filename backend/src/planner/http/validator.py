@@ -3,6 +3,7 @@
 import json
 from http import HTTPStatus
 from planner.http.exception import HttpException
+from planner.http.exception import InvalidBodyException
 
 
 def header_validator(event, keys):
@@ -30,10 +31,14 @@ def header_validator(event, keys):
     )
 
 
-def post_body_validator(event, keys):
+def get_post_body(event, keys):
     """Function validating POST request body"""
 
-    body = json.loads(event["body"])
+    try:
+        body = json.loads(event["body"])
+    except json.JSONDecodeError as e:
+        raise InvalidBodyException from e
+
     missing_keys = set(keys)
 
     for key in keys:
@@ -41,7 +46,7 @@ def post_body_validator(event, keys):
             missing_keys.remove(key)
 
     if len(missing_keys) == 0:
-        return None
+        return body
 
     missing_keys = ", ".join(sorted(list(missing_keys)))
 

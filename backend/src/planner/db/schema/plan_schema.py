@@ -7,12 +7,7 @@ def enforce_plan_schema(db):
     schema_validator = {
         "$jsonSchema": {
             "bsonType": "object",
-            "required": [
-                "name",
-                "date",
-                "owner",
-                "members"
-            ],
+            "required": ["name", "date", "owner", "members"],
             "properties": {
                 "name": {
                     "bsonType": "string",
@@ -28,7 +23,7 @@ def enforce_plan_schema(db):
                     "items": {
                         "bsonType": "objectId",
                     },
-                }
+                },
             },
         }
     }

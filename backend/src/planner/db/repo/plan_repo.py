@@ -23,7 +23,16 @@ class PlanRepo:
 
         return self.db.plans.find_one({"_id": _id}, session=self.session)
 
-    def find_all(self):
-        """Function that finds a plan using id"""
+    def update_one_by_id(self, _id, update):
+        """Function that updates one plan"""
 
-        return self.db.plans.find(session=self.session)
+        return self.db.plans.update_one(
+            {"_id": _id},
+            update,
+            session=self.session,
+        )
+
+    def delete_one_by_id(self, _id):
+        """Function that removes one plan"""
+
+        return self.db.plans.delete_one({"_id": _id}, session=self.session)

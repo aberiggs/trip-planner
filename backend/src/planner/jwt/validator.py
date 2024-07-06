@@ -3,6 +3,7 @@
 from datetime import datetime, timezone
 import jwt
 
+
 def jwt_validator(jwt_token):
     """Function that validates JWT token with secret stored in AWS"""
 

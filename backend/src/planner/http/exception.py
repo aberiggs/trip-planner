@@ -95,6 +95,21 @@ class PasswordIncorrectException(HttpException):
         )
 
 
+class InvalidPlanDateException(HttpException):
+    """Class that provides exception to handle cases where plan's date is in incorrect
+    format"""
+
+    def __init__(self):
+        super().__init__(
+            {
+                "code": HTTPStatus.BAD_REQUEST.value,
+                "body": {
+                    "message": "plan date should follow the format: %m/%d/%y"
+                },
+            }
+        )
+
+
 class ResourceNotFoundException(HttpException):
     """Class that provides generic exception to handle cases where resource cannot
     be found"""
@@ -108,16 +123,16 @@ class ResourceNotFoundException(HttpException):
         )
 
 
-class InvalidPlanDateException(HttpException):
-    """Class that provides exception to handle cases where plan's date is in incorrect
-    format"""
+class ForbiddenException(HttpException):
+    """Class that provides generic exception to handle cases where actions are not
+    permitted with the given user"""
 
     def __init__(self):
         super().__init__(
             {
-                "code": HTTPStatus.BAD_REQUEST.value,
+                "code": HTTPStatus.FORBIDDEN.value,
                 "body": {
-                    "message": "plan date should follow the format: %m/%d/%y"
+                    "message": "action is not permitted with the give user"
                 },
             }
         )
