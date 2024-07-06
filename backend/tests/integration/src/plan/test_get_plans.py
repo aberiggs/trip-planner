@@ -13,7 +13,7 @@ def test_update_plan_valid_body(
         plan_info,
         plan_info2
     ):
-    """Function that tests whether update_plan create plan properly with valid body"""
+    """Function that tests whether update_plan create plan properly"""
 
     from plan.get_plans import lambda_handler
     from planner.jwt.create_jwt_token import create_jwt_token
@@ -26,6 +26,7 @@ def test_update_plan_valid_body(
         "date": get_plan_date(plan_info["date"]),
         "owner": user["_id"],
         "members": [user["_id"]],
+        "activities": []
     }
 
     plan2 = {
@@ -33,6 +34,7 @@ def test_update_plan_valid_body(
         "date": get_plan_date(plan_info2["date"]),
         "owner": user2["_id"],
         "members": [user2["_id"], user["_id"]],
+        "activities": []
     }
 
     plan_repo.insert_one(plan)

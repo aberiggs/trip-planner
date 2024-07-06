@@ -14,7 +14,7 @@ def get_activity_date(date: str):
     except Exception as e:
         raise HttpException(
             {
-                "code": HTTPStatus.BAD_REQUEST,
+                "code": HTTPStatus.BAD_REQUEST.value,
                 "body": {
                     "message": "activity time should follow the format: %m/%d/%y %H:%M:%S"
                 },

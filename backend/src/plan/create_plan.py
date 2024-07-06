@@ -39,6 +39,7 @@ def lambda_handler(event, context):
             "date": get_plan_date(body["date"]),
             "owner": curr_user["_id"],
             "members": [curr_user["_id"]],
+            "activities": []
         }
         plan_repo.insert_one(plan)
         user_repo.update_one_by_email(

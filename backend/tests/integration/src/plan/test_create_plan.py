@@ -1,4 +1,4 @@
-"""Module providing integration test for creating plan with valid body"""
+"""Module providing integration test for creating plan"""
 
 import json
 from bson.objectid import ObjectId
@@ -12,7 +12,7 @@ def test_create_plan(
         user,
         plan_info
     ):
-    """Function that tests whether create_plan create plan properly with valid body"""
+    """Function that tests whether create_plan create plan properly"""
 
     from plan.create_plan import lambda_handler
     from planner.jwt.create_jwt_token import create_jwt_token

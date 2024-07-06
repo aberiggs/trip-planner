@@ -1,4 +1,4 @@
-"""Module providing integration test for updating plan with valid body"""
+"""Module providing integration test for updating plan"""
 
 import json
 from bson.objectid import ObjectId
@@ -14,7 +14,7 @@ def test_update_plan(
         user,
         plan_info
     ):
-    """Function that tests whether update_plan create plan properly with valid body"""
+    """Function that tests whether update_plan create plan properly"""
 
     from plan.update_plan import lambda_handler
     from planner.jwt.create_jwt_token import create_jwt_token
@@ -26,6 +26,7 @@ def test_update_plan(
         "date": get_plan_date(plan_info["date"]),
         "owner": user["_id"],
         "members": [user["_id"]],
+        "activities": []
     }
 
     plan_repo.insert_one(plan)
@@ -50,6 +51,7 @@ def test_update_plan(
                 "date": "09/30/22",
                 "owner": str(user["_id"]),
                 "members": [str(user["_id"])],
+                "activities": []
             }
         ),
     }
@@ -84,6 +86,7 @@ def test_update_plan_user_not_a_member(
         "date": get_plan_date(plan_info["date"]),
         "owner": user2["_id"],
         "members": [user2["_id"]],
+        "activities": []
     }
 
     plan_repo.insert_one(plan)
@@ -108,6 +111,7 @@ def test_update_plan_user_not_a_member(
                 "date": "09/30/22",
                 "owner": str(user["_id"]),
                 "members": [str(user["_id"])],
+                "activities": []
             }
         ),
     }
@@ -144,6 +148,7 @@ def test_update_plan_user_not_owner(
         "date": get_plan_date(plan_info["date"]),
         "owner": user2["_id"],
         "members": [user2["_id"], user["_id"]],
+        "activities": []
     }
 
     plan_repo.insert_one(plan)
@@ -168,6 +173,7 @@ def test_update_plan_user_not_owner(
                 "date": "09/30/22",
                 "owner": str(user["_id"]),
                 "members": [str(user["_id"])],
+                "activities": []
             }
         ),
     }

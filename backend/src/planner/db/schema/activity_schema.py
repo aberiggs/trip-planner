@@ -7,27 +7,32 @@ def enforce_activity_schema(db):
     schema_validator = {
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["name", "location", "start_time", "end_time", "note"],
+            "required": [
+                "name",
+                "plan_id",
+                "location",
+                "start_time",
+                "end_time",
+                "note"
+            ],
             "properties": {
                 "name": {
                     "bsonType": "string",
-                    "description": "must be a string and is required",
+                },
+                "plan_id": {
+                    "bsonType": "objectId",
                 },
                 "location": {
                     "bsonType": "string",
-                    "description": "must be an string and is required",
                 },
                 "start_time": {
                     "bsonType": "date",
-                    "description": "must be a date and is required",
                 },
                 "end_time": {
                     "bsonType": "date",
-                    "description": "must be a date and is required",
                 },
                 "note": {
                     "bsonType": "string",
-                    "description": "must be a string and is required",
                 },
             },
         }

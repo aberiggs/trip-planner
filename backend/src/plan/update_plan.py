@@ -28,7 +28,7 @@ def lambda_handler(event, context):
 
     try:
         body = validate_get_post_body(
-            event, ["plan_id", "name", "date", "owner", "members"]
+            event, ["plan_id", "name", "date", "owner", "members", "activities"]
         )
         check_user_signin(event)
 
@@ -62,6 +62,7 @@ def lambda_handler(event, context):
             "date": get_plan_date(body["date"]),
             "owner": curr_user["_id"],
             "members": members_id,
+            "activities": body["activities"]
         }
 
         plan_repo.update_one_by_id(

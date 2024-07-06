@@ -9,6 +9,7 @@ def jsonify_activity(activity):
     activity["name"] = activity["name"]
     activity["note"] = activity["note"]
     activity["activity_id"] = str(activity["_id"])
+    activity["plan_id"] = str(activity["plan_id"])
     activity.pop("_id")
 
     return activity

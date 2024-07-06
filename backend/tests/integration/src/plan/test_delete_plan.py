@@ -13,7 +13,7 @@ def test_delete_plan(
         user2,
         plan_info
     ):
-    """Function that tests whether create_plan create plan properly with valid body"""
+    """Function that tests whether create_plan create plan properly"""
 
     from plan.delete_plan import lambda_handler
     from planner.jwt.create_jwt_token import create_jwt_token
@@ -36,6 +36,7 @@ def test_delete_plan(
         "date": get_plan_date(plan_info["date"]),
         "owner": user["_id"],
         "members": [user["_id"], user2["_id"]],
+        "activities": []
     }
 
     plan_repo.insert_one(plan)
@@ -92,6 +93,7 @@ def test_member_delete_plan(
         "date": get_plan_date(plan_info["date"]),
         "owner": user2["_id"],
         "members": [user["_id"], user2["_id"]],
+        "activities": []
     }
 
     plan_repo.insert_one(plan)

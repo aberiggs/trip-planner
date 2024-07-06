@@ -8,8 +8,15 @@ def jsonify_plan(plan):
     plan["owner"] = str(plan["owner"])
     plan["plan_id"] = str(plan["_id"])
     plan.pop("_id")
+
     members_str = []
     for member in plan["members"]:
         members_str.append(str(member))
     plan["members"] = members_str
+
+    activities_str = []
+    for activity in plan["activities"]:
+        activities_str.append(str(activity))
+    plan["activities"] = activities_str
+
     return plan

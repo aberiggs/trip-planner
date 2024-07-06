@@ -23,7 +23,7 @@ def validate_header(event, keys):
 
     raise HttpException(
         {
-            "code": HTTPStatus.BAD_REQUEST,
+            "code": HTTPStatus.BAD_REQUEST.value,
             "body": {
                 "message": f"The following fields are missing in header: {missing_keys}"
             },
@@ -52,7 +52,7 @@ def validate_get_post_body(event, keys):
 
     raise HttpException(
         {
-            "code": HTTPStatus.BAD_REQUEST,
+            "code": HTTPStatus.BAD_REQUEST.value,
             "body": {
                 "message": f"The following fields are missing in body: {missing_keys}"
             },

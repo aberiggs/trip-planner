@@ -13,7 +13,7 @@ def get_plan_date(date: str):
     except Exception as e:
         raise HttpException(
             {
-                "code": HTTPStatus.BAD_REQUEST,
+                "code": HTTPStatus.BAD_REQUEST.value,
                 "body": {
                     "message": "plan date should follow the format: %m/%d/%y"
                 },
