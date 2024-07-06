@@ -210,6 +210,7 @@ paths:
                 missing header:
                   value:
                       message: "The following fields are missing in header: {missing_keys}"
+
   /create_plan:
     post:
       operationId: createPlan
@@ -346,6 +347,18 @@ paths:
                 user not signed in:
                   value:
                       message: you are not signed in
+        403:
+          description: |-
+            Forbidden.
+          content:
+            application/json:
+              examples:
+                non-member trying to update plan:
+                  value:
+                      message: action is not permitted with the give user
+                non-owner trying to update plan's ownership:
+                  value:
+                      message: action is not permitted with the give user
 
   /delete_plan:
     post:
@@ -373,13 +386,9 @@ paths:
           content:
             application/json:
               examples:
-                Plan updated successfully:
+                Plan deleted successfully:
                   value:
-                    plan_id: 6688693729a03432a97f4180
-                    name: very fun plan
-                    date: 06/15/2024
-                    owner: 66886919b80970c71c3d5f4b
-                    members: [66886919b80970c71c3d5f4b]
+                    message: plan deleted
         400:
           description: |-
             Bad Request.
@@ -404,3 +413,59 @@ paths:
                 user not signed in:
                   value:
                       message: you are not signed in
+        403:
+          description: |-
+            Forbidden.
+          content:
+            application/json:
+              examples:
+                non-member trying to update plan:
+                  value:
+                      message: action is not permitted with the give user
+                non-owner trying to update plan's ownership:
+                  value:
+                      message: action is not permitted with the give user
+
+  /get_plans:
+    get:
+      operationId: getPlans
+      summary: Get all plans the current user is part of
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: |-
+            OK.
+          content:
+            application/json:
+              examples:
+                User signed in:
+                  value:
+                    - plan_id: 6688693729a03432a97f4180
+                      name: first plan
+                      date: 06/15/2024
+                      owner: 66886919b80970c71c3d5f4b
+                      members: [66886919b80970c71c3d5f4b]
+                    - plan_id: 6688693729a03432a97f4196
+                      name: second plan
+                      date: 06/16/2024
+                      owner: 66886919b80970c71c3d5f4b
+                      members: [66886919b80970c71c3d5f4b]
+        401:
+          description: |-
+            Unauthorized.
+          content:
+            application/json:
+              examples:
+                user not signed in:
+                  value:
+                      message: you are not authorized
+        400:
+          description: |-
+            Bad Request.
+          content:
+            application/json:
+              examples:
+                missing header:
+                  value:
+                      message: "The following fields are missing in header: {missing_keys}"

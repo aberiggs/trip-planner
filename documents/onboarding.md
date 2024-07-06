@@ -25,3 +25,8 @@ This document will guide you through the necessary tools and the configuration p
 
 1. Create an account on [Figma](https://www.figma.com). We will use Figma to design our frontend interface.
 2. Contact Sprocket (@sprocket) on Discord, and he will invite you to the team.
+
+
+## Install VSCode Extension (Optional)
+
+1. Install the [OpenAPI (Swagger) Editor](https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi) extension. This extension helps render our api contract.
