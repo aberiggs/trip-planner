@@ -28,6 +28,21 @@ def user(utc_now):
     }
 
 @pytest.fixture()
+def user2(utc_now):
+    """Function providing fixture to use user2"""
+
+    return {
+        "first_name": "Cool",
+        "last_name": "Bob",
+        "picture": "cool.bob.png",
+        "email": "cool.bob@email.com",
+        "password": hash_password("cool's secure password"),
+        "last_visited": utc_now.replace(tzinfo=None),
+        "google_signup": False,
+        "plans": [],
+    }
+
+@pytest.fixture()
 def plan_info():
     """Function providing fixture to use plan_info"""
 

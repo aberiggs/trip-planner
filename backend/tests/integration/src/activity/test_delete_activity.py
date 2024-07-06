@@ -1,13 +1,13 @@
-"""Module providing integration test for creating activity"""
+"""Module providing integration test for deleting activity"""
 
 import json
-from bson.objectid import ObjectId
+from http import HTTPStatus
 from planner.date.get_plan_date import get_plan_date
-from planner.db.serialize.jsonify_activity import jsonify_activity
+from planner.date.get_activity_date import get_activity_date
 from planner.http.response import handle_response
 from planner.http.exception import ForbiddenException
 
-def test_create_activity(
+def test_delete_activity(
         patch_get_session_repos,
         user_repo,
         plan_repo,
@@ -16,9 +16,9 @@ def test_create_activity(
         plan_info,
         activity_info
     ):
-    """Function that tests whether create_activity create activity properly"""
+    """Function that tests whether delete_activity delete activity properly"""
 
-    from activity.create_activity import lambda_handler
+    from activity.delete_activity import lambda_handler
     from planner.jwt.create_jwt_token import create_jwt_token
 
     user_repo.insert_one(user)
@@ -40,33 +40,36 @@ def test_create_activity(
         "members": [user["_id"]],
         "activities": []
     }
-
     plan_repo.insert_one(plan)
 
     activity = {
         "name": activity_info["name"],
         "location": activity_info["location"],
-        "start_time": activity_info["start_time"],
-        "end_time": activity_info["end_time"],
+        "start_time": get_activity_date(activity_info["start_time"]),
+        "end_time": get_activity_date(activity_info["end_time"]),
         "note": activity_info["note"],
-        "plan_id": str(plan["_id"])
+        "plan_id": plan["_id"]
     }
+    activity_repo.insert_one(activity)
 
     event = {
         "headers": {"Authorization": f"Bearer {jwt_token}"},
-        "body": json.dumps(activity),
+        "body": json.dumps({
+            "activity_id": str(activity["_id"])
+        }),
     }
 
     lambda_response = lambda_handler(event, None)
 
-    result = json.loads(lambda_response["body"])
-    found_activity = activity_repo.find_one_by_id(ObjectId(result["activity_id"]))
-    found_plan = plan_repo.find_one_by_id(found_activity["plan_id"])
-    assert found_activity["_id"] in found_plan["activities"]
-    assert jsonify_activity(found_activity) == result
+    assert lambda_response["statusCode"] == HTTPStatus.NO_CONTENT
+
+    assert not activity_repo.find_one_by_id(activity["_id"])
+
+    updated_plan = plan_repo.find_one_by_id(plan["_id"])
+    assert activity["_id"] not in updated_plan["activities"]
 
 
-def test_create_activity_user_not_member(
+def test_delete_activity_user_not_member(
         patch_get_session_repos,
         user_repo,
         plan_repo,
@@ -76,15 +79,13 @@ def test_create_activity_user_not_member(
         plan_info,
         activity_info
     ):
-    """Function that tests whether create_activity catches cases where user is
-    not a member of the plan that the activity is part of"""
+    """Function that tests whether delete_activity delete activity properly"""
 
-    from activity.create_activity import lambda_handler
+    from activity.delete_activity import lambda_handler
     from planner.jwt.create_jwt_token import create_jwt_token
 
     user_repo.insert_one(user)
     user_repo.insert_one(user2)
-
     first_name = user["first_name"]
     last_name = user["last_name"]
 
@@ -103,21 +104,23 @@ def test_create_activity_user_not_member(
         "members": [user2["_id"]],
         "activities": []
     }
-
     plan_repo.insert_one(plan)
 
     activity = {
         "name": activity_info["name"],
         "location": activity_info["location"],
-        "start_time": activity_info["start_time"],
-        "end_time": activity_info["end_time"],
+        "start_time": get_activity_date(activity_info["start_time"]),
+        "end_time": get_activity_date(activity_info["end_time"]),
         "note": activity_info["note"],
-        "plan_id": str(plan["_id"])
+        "plan_id": plan["_id"]
     }
+    activity_repo.insert_one(activity)
 
     event = {
         "headers": {"Authorization": f"Bearer {jwt_token}"},
-        "body": json.dumps(activity),
+        "body": json.dumps({
+            "activity_id": str(activity["_id"])
+        }),
     }
 
     lambda_response = lambda_handler(event, None)

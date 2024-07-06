@@ -301,6 +301,11 @@ paths:
                   items:
                     type: string
                   description: list of members' ids
+                activities:
+                  type: array
+                  items:
+                    type: string
+                  description: list of activities' ids
             examples:
               example:
                 value:
@@ -309,6 +314,7 @@ paths:
                   date: 06/15/2024
                   owner: 66886919b80970c71c3d5f4b
                   members: [66886919b80970c71c3d5f4b]
+                  activities: [6689ace820b661acd6743e71]
       responses:
         200:
           description: |-
@@ -469,3 +475,83 @@ paths:
                 missing header:
                   value:
                       message: "The following fields are missing in header: {missing_keys}"
+
+  /activity/create:
+    post:
+      operationId: createActivity
+      summary: Create activity
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: activity name
+                plan_id:
+                  type: string
+                  description: plan id
+                location:
+                  type: string
+                  description: location address
+                start_time:
+                  type: string
+                  description: activity start_time in the format MM/DD/YY HH:MM:SS
+                end_time:
+                  type: string
+                  description: activity end_time in the format MM/DD/YY HH:MM:SS
+                note:
+                  type: string
+                  description: note address
+            examples:
+              example:
+                value:
+                  name: new activity
+                  plan_id: 6689ab706be969d2b7f93fad
+                  location: here
+                  start_time: 09/19/22 13:55:26
+                  end_time: 09/19/22 15:35:12
+                  note: cool note
+      responses:
+        200:
+          description: |-
+            OK.
+          content:
+            application/json:
+              examples:
+                Activity created successfully:
+                  value:
+                    name: new activity
+                    activity_id: 6689ace820b661acd6743e71
+                    plan_id: 6689ab706be969d2b7f93fad
+                    location: here
+                    start_time: 09/19/22 13:55:26
+                    end_time: 09/19/22 15:35:12
+                    note: cool note
+        400:
+          description: |-
+            Bad Request.
+          content:
+            application/json:
+              examples:
+                request body is invalid:
+                  value:
+                      message: request body is an invalid JSON
+                request body missing required fields:
+                  value:
+                      message: "The following fields are missing in body: {missing fields}"
+                missing header:
+                  value:
+                      message: "The following fields are missing in header: {missing_keys}"
+        401:
+          description: |-
+            Unauthorized.
+          content:
+            application/json:
+              examples:
+                user not signed in:
+                  value:
+                      message: you are not signed in
