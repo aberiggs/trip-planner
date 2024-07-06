@@ -7,6 +7,7 @@ from unittest.mock import patch
 import pytest
 from planner.http.response import handle_response
 
+
 @pytest.fixture
 def patch_db_setup(user_repo):
     """Function that provides fixture to patch db_setup so that transactions

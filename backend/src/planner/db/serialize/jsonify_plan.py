@@ -1,5 +1,6 @@
 """Module providing function to jsonify plans"""
 
+
 def jsonify_plan(plan):
     """Function that serializes plan"""
 

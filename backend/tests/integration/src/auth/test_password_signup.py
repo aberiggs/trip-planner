@@ -7,6 +7,7 @@ from planner.http.response import handle_response
 from planner.util.password import check_password
 import pytest
 
+
 @pytest.fixture
 def patch_db_setup(user_repo):
     """Function that provides fixture to patch db_setup so that transactions
@@ -18,6 +19,7 @@ def patch_db_setup(user_repo):
         autospec=True,
     ) as m:
         yield m
+
 
 def test_password_signup(
     patch_get_utc_now,

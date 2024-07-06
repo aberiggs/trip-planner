@@ -3,6 +3,7 @@
 import time
 import jwt
 
+
 def test_validate_jwt_signed_with_diff_secret(patch_get_secret) -> None:
     """Function that tests whether jwt validator catches token signed with a different key"""
 
@@ -23,6 +24,7 @@ def test_validate_jwt_signed_with_diff_secret(patch_get_secret) -> None:
 
     assert validate_jwt(token) is False
 
+
 def test_validate_jwt_signed_with_same_secret(patch_get_secret) -> None:
     """Function that tests whether jwt validator returns true when token is
     signed with the same key"""
@@ -40,6 +42,7 @@ def test_validate_jwt_signed_with_same_secret(patch_get_secret) -> None:
 
     assert validate_jwt(token) is True
 
+
 def test_validate_jwt_expired_jwt(patch_get_secret) -> None:
     """Function that tests whether jwt validator catches expired token"""
 
@@ -55,6 +58,7 @@ def test_validate_jwt_expired_jwt(patch_get_secret) -> None:
     token = create_jwt_token(payload, int(time.time()) - 10)
 
     assert validate_jwt(token) is False
+
 
 def test_validate_jwt_no_exp(patch_get_secret) -> None:
     """Function that tests whether jwt validator returns true when token

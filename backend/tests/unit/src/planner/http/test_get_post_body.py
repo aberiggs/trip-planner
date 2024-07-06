@@ -24,6 +24,7 @@ def test_validate_header_missing_header() -> None:
             },
         }
 
+
 def test_validate_header_missing_headers() -> None:
     """Function that tests whether header validator catches missing headers"""
 
@@ -31,9 +32,7 @@ def test_validate_header_missing_headers() -> None:
 
     event = {"headers": {}}
 
-    missing_keys = ", ".join(
-        sorted(list(["Authentication", "Content-Type"]))
-    )
+    missing_keys = ", ".join(sorted(list(["Authentication", "Content-Type"])))
 
     with pytest.raises(HttpException) as e:
         validate_header(event, expected_keys)
@@ -43,6 +42,7 @@ def test_validate_header_missing_headers() -> None:
                 "message": f"The following fields are missing in header: {missing_keys}"
             },
         }
+
 
 def test_validate_header_no_missing_header() -> None:
     """Function that tests whether header validator returns None when there are
@@ -57,6 +57,7 @@ def test_validate_header_no_missing_header() -> None:
     except Exception as e:
         pytest.fail(f"validate_header raised an exception: {e}")
 
+
 def test_post_body_validator_missing_key() -> None:
     """Function that tests whether get_post_body catches the missing key"""
 
@@ -64,9 +65,7 @@ def test_post_body_validator_missing_key() -> None:
 
     event = {
         "headers": {},
-        "body": json.dumps(
-            {"name": "willy", "email": "chiweilien@gmail.com"}
-        ),
+        "body": json.dumps({"name": "willy", "email": "chiweilien@gmail.com"}),
     }
 
     with pytest.raises(HttpException) as e:
@@ -77,6 +76,7 @@ def test_post_body_validator_missing_key() -> None:
                 "message": "The following fields are missing in body: addr"
             },
         }
+
 
 def test_validate_get_post_body_invalid_body() -> None:
     """Function that tests whether validate_get_post_body catches invalid body"""
@@ -116,6 +116,7 @@ def test_validate_get_post_body_missing_keys() -> None:
                 "message": f"The following fields are missing in body: {missing_keys}"
             },
         }
+
 
 def test_validate_post_body_validator_no_missing_keys() -> None:
     """Function that tests whether get_post_body returns None when there

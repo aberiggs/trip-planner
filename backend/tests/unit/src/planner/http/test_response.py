@@ -4,6 +4,7 @@ from http import HTTPStatus
 import pytest
 from planner.http.response import handle_response
 
+
 def test_handle_response_normal() -> None:
     """Function that tests whether response handler won't raise any exception
     when response is normal"""
@@ -18,6 +19,7 @@ def test_handle_response_normal() -> None:
     except Exception as e:
         pytest.fail(f"handle_response raised an exception: {e}")
 
+
 def test_handle_response_without_code() -> None:
     """Function that tests whether response handler catches the missing key: code"""
 
@@ -25,6 +27,7 @@ def test_handle_response_without_code() -> None:
 
     with pytest.raises(ValueError):
         handle_response(response)
+
 
 def test_handle_response_without_body() -> None:
     """Function that tests whether response handler catches the missing key: body"""

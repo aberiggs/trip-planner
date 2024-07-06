@@ -36,6 +36,7 @@ def mock_id_info(utc_now, password_user):
         "plans": [],
     }
 
+
 @pytest.fixture
 def patch_google_verify_token(mock_id_info):
     """Function that provides fixture to patch google.oauth2.id_token.verify_oauth2_token"""
@@ -46,6 +47,7 @@ def patch_google_verify_token(mock_id_info):
         autospec=True,
     ) as m:
         yield m
+
 
 @pytest.fixture
 def patch_db_setup(user_repo):
@@ -58,6 +60,7 @@ def patch_db_setup(user_repo):
         autospec=True,
     ) as m:
         yield m
+
 
 def test_google_signin_password_signup(
     patch_get_utc_now,

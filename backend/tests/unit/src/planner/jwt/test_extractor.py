@@ -4,6 +4,7 @@ import time
 import pytest
 import jwt
 
+
 def test_extract_jwt_normal(patch_get_secret) -> None:
     """Function that tests whether jwt validator catches token signed with a different key"""
 
@@ -18,6 +19,7 @@ def test_extract_jwt_normal(patch_get_secret) -> None:
 
     token = create_jwt_token(payload)
     assert extract_jwt(token) == payload
+
 
 def test_extract_jwt_signed_with_diff_secret(patch_get_secret) -> None:
     """Function that tests whether jwt extractor doesn't validate the token"""

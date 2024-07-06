@@ -11,6 +11,7 @@ from planner.jwt.get_jwt_token import get_jwt_token
 from planner.http.exception import (
     HttpException,
     ResourceNotFoundException,
+    ForbiddenException
 )
 from planner.http.response import handle_response
 from planner.date.get_plan_date import get_plan_date
@@ -46,6 +47,16 @@ def lambda_handler(event, context):
         curr_user = user_repo.find_one_by_email(jwt_payload["email"])
         if not curr_user:
             raise ResourceNotFoundException
+
+        # only owner can modify owner field
+        found_plan = plan_repo.find_one_by_id(ObjectId(body["plan_id"]))
+        if (ObjectId(body["owner"]) != found_plan["owner"] and
+                found_plan["owner"] != curr_user["_id"]):
+            raise ForbiddenException
+
+        # only members can modify plan
+        if curr_user["_id"] not in found_plan["members"]:
+            raise ForbiddenException
 
         # check if all members exist in the database
         members_id = []

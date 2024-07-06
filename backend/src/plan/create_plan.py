@@ -63,9 +63,7 @@ def lambda_handler(event, context):
 
         jsonify_plan(plan)
 
-        return handle_response(
-            {"code": HTTPStatus.CREATED.value, "body": plan}
-        )
+        return handle_response({"code": HTTPStatus.CREATED.value, "body": plan})
 
     except HttpException as e:
         return handle_response(e.args[0])

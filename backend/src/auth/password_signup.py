@@ -6,10 +6,7 @@ from planner.http.response import handle_response
 from planner.db.repo.user_repo import UserRepo
 from planner.db.db_init import db_init
 from planner.util.password import hash_password
-from planner.http.exception import (
-    HttpException,
-    EmailUsedException,
-)
+from planner.http.exception import HttpException, EmailUsedException
 
 
 def db_setup():

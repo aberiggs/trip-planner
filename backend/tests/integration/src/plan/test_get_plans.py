@@ -1,46 +1,10 @@
-"""Module providing integration test for updating plan with valid body"""
+"""Module providing integration test for getting plans"""
 
 import json
-import datetime
 from unittest.mock import patch
 import pytest
-from planner.util.password import hash_password
 from planner.date.get_plan_date import get_plan_date
 from planner.db.serialize.jsonify_plan import jsonify_plan
-
-utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0)
-
-user = {
-    "first_name": "Steve",
-    "last_name": "Bob",
-    "picture": "steve.bob.png",
-    "email": "steve.bob@email.com",
-    "password": hash_password("steve's secure password"),
-    "last_visited": utc_now.replace(tzinfo=None),
-    "google_signup": False,
-    "plans": [],
-}
-
-user2 = {
-    "first_name": "Cool",
-    "last_name": "Bob",
-    "picture": "cool.bob.png",
-    "email": "cool.bob@email.com",
-    "password": hash_password("cool's secure password"),
-    "last_visited": utc_now.replace(tzinfo=None),
-    "google_signup": False,
-    "plans": [],
-}
-
-plan_info = {
-    "name": "steve's plan",
-    "date": "09/19/22",
-}
-
-plan_info2 = {
-    "name": "steve's second plan",
-    "date": "09/20/22",
-}
 
 
 @pytest.fixture
@@ -56,7 +20,15 @@ def patch_db_setup(user_repo, plan_repo):
         yield m
 
 
-def test_update_plan_valid_body(patch_db_setup, user_repo, plan_repo):
+def test_update_plan_valid_body(
+        patch_db_setup,
+        user_repo,
+        plan_repo,
+        user,
+        user2,
+        plan_info,
+        plan_info2
+    ):
     """Function that tests whether update_plan create plan properly with valid body"""
 
     from plan.get_plans import lambda_handler

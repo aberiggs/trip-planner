@@ -19,6 +19,19 @@ class InvalidBodyException(HttpException):
         )
 
 
+class UnauthroizedException(HttpException):
+    """Class that provides exception to handle cases where user is not authorized
+    to perform actions"""
+
+    def __init__(self):
+        super().__init__(
+            {
+                "code": HTTPStatus.UNAUTHORIZED.value,
+                "body": {"message": "you are not authorized"},
+            }
+        )
+
+
 class InvalidGoogleIdTokenException(HttpException):
     """Class that provides exception to handle cases where id token from Google is invalid"""
 

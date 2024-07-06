@@ -3,6 +3,7 @@
 from unittest.mock import patch
 import pytest
 
+
 @pytest.fixture
 def patch_get_secret():
     """Function that provides fixture to patch planner.util.get_secret.get_secret"""

@@ -5,11 +5,15 @@ import datetime
 import pytest
 from planner.util.password import hash_password
 
+
 @pytest.fixture()
 def utc_now():
     """Function providing fixture to use utc_now"""
 
-    return datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0)
+    return datetime.datetime.now(tz=datetime.timezone.utc).replace(
+        microsecond=0
+    )
+
 
 @pytest.fixture()
 def mock_id_info(utc_now):
@@ -23,6 +27,7 @@ def mock_id_info(utc_now):
         "last_visited": utc_now,
         "plans": [],
     }
+
 
 @pytest.fixture()
 def google_user(mock_id_info, utc_now):
@@ -39,6 +44,7 @@ def google_user(mock_id_info, utc_now):
         "plans": [],
     }
 
+
 @pytest.fixture()
 def password_signin_info():
     """Function providing fixture to use mock signin_info for password sign in"""
@@ -51,11 +57,13 @@ def password_signin_info():
         "password": "bob's secure password",
     }
 
+
 @pytest.fixture()
 def password_signup_info(password_signin_info):
     """Function providing fixture to use mock signin_info for password sign in"""
 
     return password_signin_info
+
 
 @pytest.fixture()
 def password_user(password_signin_info, utc_now):
@@ -72,6 +80,7 @@ def password_user(password_signin_info, utc_now):
         "plans": [],
     }
 
+
 @pytest.fixture
 def patch_google_verify_token(mock_id_info):
     """Function that provides fixture to patch google.oauth2.id_token.verify_oauth2_token"""
@@ -83,6 +92,7 @@ def patch_google_verify_token(mock_id_info):
     ) as m:
         yield m
 
+
 @pytest.fixture
 def patch_get_secret():
     """Function that provides fixture to patch planner.util.get_secret.get_secret"""
@@ -93,6 +103,7 @@ def patch_get_secret():
         autospec=True,
     ) as m:
         yield m
+
 
 @pytest.fixture
 def patch_google_verify_invalid_token():
@@ -117,6 +128,7 @@ def patch_create_jwt_token():
         autospec=True,
     ) as m:
         yield m
+
 
 @pytest.fixture
 def patch_get_utc_now(utc_now):
