@@ -3,6 +3,8 @@
 import pytest
 import pymongo
 from planner.util.get_secret import get_secret
+from planner.db.repo.user_repo import UserRepo
+from planner.db.repo.plan_repo import PlanRepo
 
 
 @pytest.fixture(scope="session")
@@ -13,6 +15,7 @@ def client():
         "mongo-db-connection-secret", "mongo_db_connect_url"
     )
     client = pymongo.MongoClient(mongo_db_connect_url)
+
     assert (
         client.admin.command("ping")["ok"] != 0.0
     )  # check the connection is ok
@@ -30,3 +33,17 @@ def rollback_session(client):
         yield session
     finally:
         session.abort_transaction()
+
+
+@pytest.fixture()
+def user_repo(client, rollback_session):
+    """Function providing fixture to use user repo"""
+
+    return UserRepo(client.trip_planner, rollback_session)
+
+
+@pytest.fixture()
+def plan_repo(client, rollback_session):
+    """Function providing fixture to use user repo"""
+
+    return PlanRepo(client.trip_planner, rollback_session)

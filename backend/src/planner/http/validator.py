@@ -2,10 +2,11 @@
 
 import json
 from http import HTTPStatus
-from planner.http.response import response_handler
+from planner.http.exception import HttpException
+from planner.http.exception import InvalidBodyException
 
 
-def header_validator(event, keys):
+def validate_header(event, keys):
     """Function validating request headers"""
 
     headers = event["headers"]
@@ -20,18 +21,24 @@ def header_validator(event, keys):
 
     missing_keys = ", ".join(sorted(list(missing_keys)))
 
-    return response_handler(
-        HTTPStatus.BAD_REQUEST,
+    raise HttpException(
         {
-            "message": f"The following fields are missing in header: {missing_keys}"
-        },
+            "code": HTTPStatus.BAD_REQUEST,
+            "body": {
+                "message": f"The following fields are missing in header: {missing_keys}"
+            },
+        }
     )
 
 
-def post_body_validator(event, keys):
+def validate_get_post_body(event, keys):
     """Function validating POST request body"""
 
-    body = json.loads(event["body"])
+    try:
+        body = json.loads(event["body"])
+    except json.JSONDecodeError as e:
+        raise InvalidBodyException from e
+
     missing_keys = set(keys)
 
     for key in keys:
@@ -39,13 +46,15 @@ def post_body_validator(event, keys):
             missing_keys.remove(key)
 
     if len(missing_keys) == 0:
-        return None
+        return body
 
     missing_keys = ", ".join(sorted(list(missing_keys)))
 
-    return response_handler(
-        HTTPStatus.BAD_REQUEST,
+    raise HttpException(
         {
-            "message": f"The following fields are missing in body: {missing_keys}"
-        },
+            "code": HTTPStatus.BAD_REQUEST,
+            "body": {
+                "message": f"The following fields are missing in body: {missing_keys}"
+            },
+        }
     )

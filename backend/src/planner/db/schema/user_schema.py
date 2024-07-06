@@ -12,7 +12,7 @@ def enforce_user_schema(db):
                 "last_name",
                 "last_visited",
                 "email",
-                "google_login",
+                "google_signup",
             ],
             "properties": {
                 "first_name": {
@@ -33,7 +33,7 @@ def enforce_user_schema(db):
                 "password": {
                     "bsonType": "binData",
                 },
-                "google_login": {
+                "google_signup": {
                     "bsonType": "bool",
                 },
                 "plans": {
