@@ -145,7 +145,7 @@ class ForbiddenException(HttpException):
             {
                 "code": HTTPStatus.FORBIDDEN.value,
                 "body": {
-                    "message": "action is not permitted with the give user"
+                    "message": "action is not permitted with the given user"
                 },
             }
         )

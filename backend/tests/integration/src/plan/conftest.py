@@ -60,3 +60,15 @@ def plan_info2(utc_now):
         "name": "steve's second plan",
         "date": "09/20/22",
     }
+
+@pytest.fixture()
+def activity_info():
+    """Function providing fixture to use activity_info"""
+
+    return {
+        "name": "eating at the dining court",
+        "location": "dining court",
+        "start_time": "09/19/22 13:55:26",
+        "end_time": "09/19/22 15:35:12",
+        "note": "eating with bob",
+    }

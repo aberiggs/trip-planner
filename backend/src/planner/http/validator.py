@@ -32,7 +32,7 @@ def validate_header(event, keys):
 
 
 def validate_get_post_body(event, keys):
-    """Function validating POST request body"""
+    """Function that validates and get POST request body"""
 
     try:
         body = json.loads(event["body"])
@@ -55,6 +55,31 @@ def validate_get_post_body(event, keys):
             "code": HTTPStatus.BAD_REQUEST.value,
             "body": {
                 "message": f"The following fields are missing in body: {missing_keys}"
+            },
+        }
+    )
+
+def validate_get_path_params(event, keys):
+    """Function that validates and get path params"""
+
+    params = event["pathParameters"]
+
+    missing_keys = set(keys)
+
+    for key in keys:
+        if key in params:
+            missing_keys.remove(key)
+
+    if len(missing_keys) == 0:
+        return params
+
+    missing_keys = ", ".join(sorted(list(missing_keys)))
+
+    raise HttpException(
+        {
+            "code": HTTPStatus.BAD_REQUEST.value,
+            "body": {
+                "message": f"The following params are missing in path: {missing_keys}"
             },
         }
     )

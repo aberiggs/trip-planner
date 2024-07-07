@@ -23,6 +23,7 @@ def lambda_handler(event, context):
     repos = get_session_repos()
     user_repo = repos["user"]
     plan_repo = repos["plan"]
+    activity_repo = repos["activity"]
 
     try:
         body = validate_get_post_body(event, ["plan_id"])
@@ -56,6 +57,10 @@ def lambda_handler(event, context):
                     "$pull": {"plans": plan_id},
                 },
             )
+
+        # remove all associated activities
+        for activity in plan["activities"]:
+            activity_repo.delete_one_by_id(activity)
 
         plan_repo.delete_one_by_id(plan_id)
 

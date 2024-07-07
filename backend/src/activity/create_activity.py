@@ -71,7 +71,7 @@ def lambda_handler(event, context):
         )
 
         return handle_response({
-            "code": HTTPStatus.OK.value,
+            "code": HTTPStatus.CREATED.value,
             "body": jsonify_activity(activity)
         })
     except HttpException as e:

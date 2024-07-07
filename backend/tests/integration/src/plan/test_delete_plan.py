@@ -4,13 +4,16 @@ import json
 from planner.date.get_plan_date import get_plan_date
 from planner.http.response import handle_response
 from planner.http.exception import ForbiddenException
+from planner.date.get_activity_date import get_activity_date
 
 def test_delete_plan(
         patch_get_session_repos,
         user_repo,
         plan_repo,
+        activity_repo,
         user,
         user2,
+        activity_info,
         plan_info
     ):
     """Function that tests whether create_plan create plan properly"""
@@ -38,10 +41,29 @@ def test_delete_plan(
         "members": [user["_id"], user2["_id"]],
         "activities": []
     }
-
     plan_repo.insert_one(plan)
 
+    activity = {
+        "name": activity_info["name"],
+        "location": activity_info["location"],
+        "start_time": get_activity_date(activity_info["start_time"]),
+        "end_time": get_activity_date(activity_info["end_time"]),
+        "note": activity_info["note"],
+        "plan_id": plan["_id"]
+    }
+    activity_repo.insert_one(activity)
+
+    plan_repo.update_one_by_id(
+        plan["_id"],
+        {
+            "$push": {
+                "activities": activity["_id"]
+            }
+        }
+    )
+
     assert plan_repo.find_one_by_id(plan["_id"])
+    assert activity_repo.find_one_by_id(activity["_id"])
 
     event = {
         "headers": {"Authorization": f"Bearer {jwt_token}"},
@@ -50,6 +72,7 @@ def test_delete_plan(
 
     lambda_handler(event, None)
     assert not plan_repo.find_one_by_id(plan["_id"])
+    assert not activity_repo.find_one_by_id(activity["_id"])
 
     updated_user = user_repo.find_one_by_id(user["_id"])
     updated_user2 = user_repo.find_one_by_id(user["_id"])
