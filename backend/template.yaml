@@ -27,7 +27,7 @@ Resources:
         - x86_64
       Role: !GetAtt PasswordSignInExecutionRole.Arn
       Events:
-        AuthAPI:
+        PasswordSignInAPI:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
@@ -45,7 +45,7 @@ Resources:
         - x86_64
       Role: !GetAtt PasswordSignUpExecutionRole.Arn
       Events:
-        AuthAPI:
+        PasswordSignUpAPI:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
@@ -63,7 +63,7 @@ Resources:
         - x86_64
       Role: !GetAtt GoogleAuthExecutionRole.Arn
       Events:
-        AuthAPI:
+        GoogleAuthAPI:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
@@ -81,7 +81,7 @@ Resources:
         - x86_64
       Role: !GetAtt TestAuthExecutionRole.Arn
       Events:
-        AuthAPI:
+        TestAuthAPI:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
@@ -104,6 +104,24 @@ Resources:
           Properties:
             RestApiId: !Ref MyRestApi
             Path: /activity/create
+            Method: POST
+
+  UpdateActivityFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: UpdateActivityFunction
+      CodeUri: src/
+      Handler: activity.update_activity.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Role: !GetAtt UpdateActivityExecutionRole.Arn
+      Events:
+        UpdateActivityAPI:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyRestApi
+            Path: /activity/update
             Method: POST
 
   DeleteActivityFunction:
@@ -135,7 +153,7 @@ Resources:
         - x86_64
       Role: !GetAtt CreatePlanExecutionRole.Arn
       Events:
-        CreateEventAPI:
+        CreatePlanAPI:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
@@ -153,7 +171,7 @@ Resources:
         - x86_64
       Role: !GetAtt UpdatePlanExecutionRole.Arn
       Events:
-        CreateEventAPI:
+        UpdatePlanAPI:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
@@ -171,7 +189,7 @@ Resources:
         - x86_64
       Role: !GetAtt DeletePlanExecutionRole.Arn
       Events:
-        CreateActivityAPI:
+        DeletePlanAPI:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
@@ -207,7 +225,7 @@ Resources:
         - x86_64
       Role: !GetAtt GetPlanExecutionRole.Arn
       Events:
-        CreateEventAPI:
+        GetPlanAPI:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
@@ -371,6 +389,37 @@ Resources:
                   - 'logs:CreateLogStream'
                   - 'logs:PutLogEvents'
                 Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/CreatePlanFunction:*'
+
+        - PolicyName: 'SecretsManagerAccessPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:mongo-db-connection-secret-lzoiPy'
+
+  UpdateActivityExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'CloudWatchLogPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/UpdateActivityFunction:*'
 
         - PolicyName: 'SecretsManagerAccessPolicy'
           PolicyDocument:

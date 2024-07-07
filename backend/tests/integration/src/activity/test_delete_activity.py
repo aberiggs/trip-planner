@@ -16,7 +16,7 @@ def test_delete_activity(
         plan_info,
         activity_info
     ):
-    """Function that tests whether delete_activity delete activity properly"""
+    """Function that tests whether delete_activity deletes activity properly"""
 
     from activity.delete_activity import lambda_handler
     from planner.jwt.create_jwt_token import create_jwt_token

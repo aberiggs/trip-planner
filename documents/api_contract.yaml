@@ -306,7 +306,7 @@ paths:
                   plan_id: 6688693729a03432a97f4180
                   name: very fun plan
                   date: 06/15/2024
-                  owner:
+                  owner: 66886919b80970c71c3d5f4b
                   members: [66886919b80970c71c3d5f4b, 66886919b80970c71c3d5f4c]
                   activities: [66886919b80970c71c3d5f4d, 66886919b80970c71c3d5f4e]
       responses:
@@ -591,6 +591,9 @@ paths:
                 location:
                   type: string
                   description: Activity location
+                note:
+                  type: string
+                  description: Activity note
                 start_time:
                   type: string
                   description: Start time in the format MM/DD/YY HH:MM:SS
@@ -605,6 +608,7 @@ paths:
                   location: Yosemite
                   start_time: 06/15/2024 09:00:00
                   end_time: 06/15/2024 15:00:00
+                  note: It's gonna be very hot
       responses:
         200:
           description: OK.
@@ -614,10 +618,12 @@ paths:
                 activityUpdated:
                   value:
                     activity_id: 6688693729a03432a97f4180
+                    plan_id: 6688693729a03432a97f4196
                     name: hiking
                     location: Yosemite
                     start_time: 06/15/2024 09:00:00
                     end_time: 06/15/2024 15:00:00
+                    note: It's gonna be very hot
         400:
           description: Bad Request.
           content:
