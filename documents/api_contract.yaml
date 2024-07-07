@@ -697,3 +697,51 @@ paths:
                 userNotSignedIn:
                   value:
                       message: You are not signed in
+
+  /activity/{activity_id}:
+    get:
+      operationId: getActivity
+      summary: Get activity by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: activity_id
+          schema:
+            type: string
+          required: true
+          description: Activity ID
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              examples:
+                planFound:
+                  value:
+                    activity_id: 6688693729a03432a97f4180
+                    plan_id: 6688693729a03432a97f4196
+                    name: hiking
+                    location: Yosemite
+                    start_time: 06/15/2024 09:00:00
+                    end_time: 06/15/2024 15:00:00
+                    note: It's gonna be very hot
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              examples:
+                missingPathParameter:
+                  value:
+                      message: "Missing required path parameter: {missing_parameter}"
+                missingHeader:
+                  value:
+                      message: "The following fields are missing in header: {missing_keys}"
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              examples:
+                userNotSignedIn:
+                  value:
+                      message: You are not signed in
