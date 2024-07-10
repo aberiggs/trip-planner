@@ -14,7 +14,7 @@ from planner.http.validator import validate_get_path_params
 utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0)
 
 def lambda_handler(event, context):
-    """Lambda handler that update a plan in the database"""
+    """Lambda handler that gets an activity from the database"""
     from planner.db.repo.get_session_repos import get_session_repos
 
     repos = get_session_repos()

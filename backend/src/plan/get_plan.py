@@ -1,4 +1,4 @@
-"""Module providing the handler for update plan endpoint"""
+"""Module providing the handler for get plan endpoint"""
 
 import datetime
 from http import HTTPStatus
@@ -50,7 +50,7 @@ def expand_plan(plan, user_repo, activity_repo):
     return plan
 
 def lambda_handler(event, context):
-    """Lambda handler that update a plan in the database"""
+    """Lambda handler that gets a plan from the database"""
     from planner.db.repo.get_session_repos import get_session_repos
 
     repos = get_session_repos()

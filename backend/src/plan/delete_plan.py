@@ -1,4 +1,4 @@
-"""Module providing the handler for update plan endpoint"""
+"""Module providing the handler for delete plan endpoint"""
 
 import datetime
 from http import HTTPStatus
@@ -17,7 +17,7 @@ from planner.http.response import handle_response
 utc_now = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0)
 
 def lambda_handler(event, context):
-    """Lambda handler that update a plan in the database"""
+    """Lambda handler that deletes a plan from the database"""
     from planner.db.repo.get_session_repos import get_session_repos
 
     repos = get_session_repos()

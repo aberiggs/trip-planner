@@ -1,4 +1,4 @@
-"""Module providing the handler for activity creation"""
+"""Module providing the handler for activity deltion"""
 
 from http import HTTPStatus
 from bson.objectid import ObjectId
@@ -15,7 +15,7 @@ from planner.jwt.get_jwt_token import get_jwt_token
 
 
 def lambda_handler(event, context):
-    """Lambda handler that creates an activity document in MongoDB"""
+    """Lambda handler that deletes an activity document in MongoDB"""
     from planner.db.repo.get_session_repos import get_session_repos
 
     repos = get_session_repos()
