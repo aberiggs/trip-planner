@@ -1,4 +1,4 @@
-"""Module providing the handler for update plan endpoint"""
+"""Module providing the handler for get activity endpoint"""
 
 import datetime
 from http import HTTPStatus
