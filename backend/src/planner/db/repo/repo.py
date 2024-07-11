@@ -1,7 +1,7 @@
 """Module that provides repository class"""
 
 from planner.db.create_collection import create_collection
-# from planner.db.schema.activity_schema import enforce_activity_schema
+from planner.db.enforce_schema import enforce_schema
 
 class Repo:
     """Parent class that provides repository to interact with the database"""
@@ -11,7 +11,8 @@ class Repo:
         self.session = session
         self.collection = collection
         self.collection_name = collection_name
-        create_collection(self.db, self.collection_name)
+        create_collection(db, collection_name)
+        enforce_schema(db, collection_name)
 
     def insert_one(self, document):
         """Function that inserts one document"""
