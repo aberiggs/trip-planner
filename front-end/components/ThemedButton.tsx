@@ -37,11 +37,8 @@ function ThemedButtonImp({ forwardedRef, style, lightColor, darkColor, color = C
 }
 
 // Wrapping with a forwardRef so that the ref can be passed to the Pressable.
-export const ThemedButton = forwardRef<typeof ThemedButtonImp, ThemedPressableProps>(function ThemedButton(props, ref) { 
+export const ThemedButton = forwardRef<typeof ThemedButtonImp, ThemedPressableProps>(function ThemedButton(props, ref) {
   return (
     <ThemedButtonImp {...props} forwardedRef={ref} />
   )
 });
-
-
-

@@ -6,7 +6,7 @@
 import { useColorScheme } from 'react-native';
 
 import { Colors, ColorTypes } from '@/constants/Colors';
- 
+
 export function useThemeColor(
   props: { light?: string; dark?: string },
   colorName: ColorTypes
