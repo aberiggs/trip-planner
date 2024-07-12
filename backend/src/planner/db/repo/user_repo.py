@@ -6,7 +6,7 @@ class UserRepo(Repo):
     """Class that provides user repository to interact with the database"""
 
     def __init__(self, db, session):
-        super().__init__(db, session, db.users, "users")
+        super().__init__(db, session, "users")
 
     def find_one_by_email(self, email):
         """Function that finds one user by email"""

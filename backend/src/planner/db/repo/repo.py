@@ -6,10 +6,10 @@ from planner.db.enforce_schema import enforce_schema
 class Repo:
     """Parent class that provides repository to interact with the database"""
 
-    def __init__(self, db, session, collection, collection_name):
+    def __init__(self, db, session, collection_name):
         self.db = db
         self.session = session
-        self.collection = collection
+        self.collection = db[collection_name]
         self.collection_name = collection_name
         create_collection(db, collection_name)
         enforce_schema(db, collection_name)

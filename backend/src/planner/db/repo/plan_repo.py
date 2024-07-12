@@ -6,4 +6,4 @@ class PlanRepo(Repo):
     """Class that provides plan repository to interact with the database"""
 
     def __init__(self, db, session):
-        super().__init__(db, session, db.plans, "plans")
+        super().__init__(db, session, "plans")
