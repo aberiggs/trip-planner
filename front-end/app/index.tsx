@@ -1,8 +1,8 @@
-import { Link } from "expo-router";
+import { Link } from "expo-router"
 
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
-import { HelloWave } from "@/components/HelloWave";
+import { ThemedView } from "@/components/ThemedView"
+import { ThemedText } from "@/components/ThemedText"
+import { HelloWave } from "@/components/HelloWave"
 
 export default function Landing() {
   return (
@@ -28,5 +28,5 @@ export default function Landing() {
         <Link href={"(tabs)/plans"}>go to tabs</Link>
       </ThemedView>
     </ThemedView>
-  );
+  )
 }

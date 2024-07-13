@@ -1,28 +1,28 @@
-import { Text, type TextInputProps, StyleSheet, TextInput } from "react-native";
+import { type TextInputProps, StyleSheet, TextInput } from "react-native"
 
-import { useThemeColor, ColorTypes } from "@/hooks/useThemeColor";
+import { useThemeColor, ColorTypes } from "@/hooks/useThemeColor"
 
 export type ThemedInputProps = TextInputProps & {
-  lightBorderColor?: string;
-  darkBorderColor?: string;
-  borderColor?: ColorTypes;
+  lightBorderColor?: string
+  darkBorderColor?: string
+  borderColor?: ColorTypes
 
-  lightBgColor?: string;
-  darkBgColor?: string;
-  bgColor?: ColorTypes;
+  lightBgColor?: string
+  darkBgColor?: string
+  bgColor?: ColorTypes
 
-  lightPlaceholderTextColor?: string;
-  darkPlaceholderTextColor?: string;
-  placeholderTextColor?: ColorTypes;
+  lightPlaceholderTextColor?: string
+  darkPlaceholderTextColor?: string
+  placeholderTextColor?: ColorTypes
 
-  lightTextColor?: string;
-  darkTextColor?: string;
-  textColor?: ColorTypes;
+  lightTextColor?: string
+  darkTextColor?: string
+  textColor?: ColorTypes
 
-  lightShadowColor?: string;
-  darkShadowColor?: string;
-  shadowColor?: ColorTypes;
-};
+  lightShadowColor?: string
+  darkShadowColor?: string
+  shadowColor?: ColorTypes
+}
 
 export function ThemedInput({
   style,
@@ -43,22 +43,22 @@ export function ThemedInput({
   const themedPlaceholderColor = useThemeColor(
     { light: lightPlaceholderTextColor, dark: darkPlaceholderTextColor },
     placeholderTextColor
-  );
+  )
 
   const themedBgColor = useThemeColor(
     { light: lightBgColor, dark: darkBgColor },
     bgColor
-  );
+  )
 
   const themedBorderColor = useThemeColor(
     { light: lightBgColor, dark: darkBgColor },
     bgColor
-  );
+  )
 
   const themedTextColor = useThemeColor(
     { light: lightTextColor, dark: darkTextColor },
     textColor
-  );
+  )
 
   return (
     <TextInput
@@ -74,7 +74,7 @@ export function ThemedInput({
       placeholderTextColor={themedPlaceholderColor}
       {...rest}
     />
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -85,4 +85,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
   },
-});
+})

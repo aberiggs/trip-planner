@@ -1,0 +1,9 @@
+.expo
+.vscode
+assets
+ios
+node_modules
+.env
+.gitignore
+expo-env.d.ts
+package-lock.json

@@ -1,12 +1,12 @@
-import { View, type ViewProps, StyleSheet } from "react-native";
+import { View, type ViewProps, StyleSheet } from "react-native"
 
-import { useThemeColor, ColorTypes } from "@/hooks/useThemeColor";
+import { useThemeColor, ColorTypes } from "@/hooks/useThemeColor"
 
 export type ThemedBoxShadowProps = ViewProps & {
-  lightShadowColor?: string;
-  darkShadowColor?: string;
-  shadowColor?: ColorTypes;
-};
+  lightShadowColor?: string
+  darkShadowColor?: string
+  shadowColor?: ColorTypes
+}
 
 export function ThemedBoxShadow({
   style,
@@ -18,7 +18,7 @@ export function ThemedBoxShadow({
   const themedShadowColor = useThemeColor(
     { light: lightShadowColor, dark: darkShadowColor },
     shadowColor
-  );
+  )
 
   return (
     <View
@@ -31,7 +31,7 @@ export function ThemedBoxShadow({
       ]}
       {...rest}
     />
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -40,4 +40,4 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
-});
+})

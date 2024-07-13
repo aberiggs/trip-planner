@@ -1,14 +1,14 @@
-import React from "react";
+import React from "react"
 
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedFlatList } from "@/components/ThemedFlatList";
+import { ThemedView } from "@/components/ThemedView"
+import { ThemedText } from "@/components/ThemedText"
+import { ThemedFlatList } from "@/components/ThemedFlatList"
 
-import { ColorTypes } from "@/constants/Colors";
+import { ColorTypes } from "@/constants/Colors"
 
 export default function Plans() {
   return (
-    <ThemedFlatList 
+    <ThemedFlatList
       contentContainerStyle={{
         flex: 1,
         flexDirection: "column",
@@ -19,18 +19,17 @@ export default function Plans() {
       data={PlansData}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({ item }) => <PlanCard plan={item} />}
-    >
-    </ThemedFlatList>
-  );
+    ></ThemedFlatList>
+  )
 }
 
 interface PlanCardProps {
-  plan: Plan;
+  plan: Plan
 }
 
-const PlanCard: React.FC<PlanCardProps> = ({plan}) => {
+const PlanCard: React.FC<PlanCardProps> = ({ plan }) => {
   return (
-    <ThemedView 
+    <ThemedView
       style={{
         flexDirection: "row",
         justifyContent: "space-between",
@@ -44,20 +43,21 @@ const PlanCard: React.FC<PlanCardProps> = ({plan}) => {
       color={ColorTypes.primary}
     >
       <ThemedText color={ColorTypes.base}>{plan.name}</ThemedText>
-      <ThemedText color={ColorTypes.base}>{plan.date.toDateString()}</ThemedText>
+      <ThemedText color={ColorTypes.base}>
+        {plan.date.toDateString()}
+      </ThemedText>
     </ThemedView>
-  );
+  )
 }
 
 type Plan = {
-  name: string;
-  date: Date;
-};
+  name: string
+  date: Date
+}
 
 // Create a Plan data array for testing
 const PlansData: Plan[] = [
   { name: "Day Trip", date: new Date(Date.parse("2024-08-3")) },
   { name: "Bellevue Trip", date: new Date(Date.parse("2024-06-20")) },
   { name: "<Generic Name>", date: new Date(Date.parse("2024-07-10")) },
-];
-
+]

@@ -1,15 +1,15 @@
-import React from "react";
+import React from "react"
 
-import { StyleSheet } from "react-native";
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedButton } from "@/components/ThemedButton";
-import { ThemedIcon } from "@/components/ThemedIcon";
-import { Colors } from "@/constants/Colors";
-import { ColorTypes } from "@/constants/Colors";
-import { Link } from "expo-router";
-import { ThemedInput } from "@/components/ThemedInput";
-import { ThemedBoxShadow } from "@/components/ThemedBoxShadow";
+import { StyleSheet } from "react-native"
+import { ThemedView } from "@/components/ThemedView"
+import { ThemedText } from "@/components/ThemedText"
+import { ThemedButton } from "@/components/ThemedButton"
+import { ThemedIcon } from "@/components/ThemedIcon"
+import { Colors } from "@/constants/Colors"
+import { ColorTypes } from "@/constants/Colors"
+import { Link } from "expo-router"
+import { ThemedInput } from "@/components/ThemedInput"
+import { ThemedBoxShadow } from "@/components/ThemedBoxShadow"
 
 export default function Login() {
   return (
@@ -91,7 +91,7 @@ export default function Login() {
         </ThemedView>
       </ThemedView>
     </>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -148,4 +148,4 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
   },
-});
+})
