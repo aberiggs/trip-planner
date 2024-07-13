@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  back-end
+  backend
 
-  Sample SAM Template for back-end
+  Sample SAM Template for backend
 
 Parameters:
   ApplicationName:
@@ -13,7 +13,7 @@ Parameters:
 
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 30
 
 Resources:
   PasswordSignInFunction:
@@ -21,13 +21,13 @@ Resources:
     Properties:
       FunctionName: 'PasswordSignInFunction'
       CodeUri: src/
-      Handler: password_signin.lambda_handler
+      Handler: auth.password_signin.lambda_handler
       Runtime: python3.12
       Architectures:
         - x86_64
       Role: !GetAtt PasswordSignInExecutionRole.Arn
       Events:
-        AuthAPI:
+        PasswordSignInAPI:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
@@ -39,13 +39,13 @@ Resources:
     Properties:
       FunctionName: 'PasswordSignUpFunction'
       CodeUri: src/
-      Handler: password_signup.lambda_handler
+      Handler: auth.password_signup.lambda_handler
       Runtime: python3.12
       Architectures:
         - x86_64
       Role: !GetAtt PasswordSignUpExecutionRole.Arn
       Events:
-        AuthAPI:
+        PasswordSignUpAPI:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
@@ -57,17 +57,17 @@ Resources:
     Properties:
       FunctionName: 'GoogleAuthFunction'
       CodeUri: src/
-      Handler: google_auth.lambda_handler
+      Handler: auth.google_auth.lambda_handler
       Runtime: python3.12
       Architectures:
         - x86_64
       Role: !GetAtt GoogleAuthExecutionRole.Arn
       Events:
-        AuthAPI:
+        GoogleAuthAPI:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
-            Path: /google_auth
+            Path: /google/auth
             Method: POST
 
   TestAuthFunction:
@@ -75,37 +75,180 @@ Resources:
     Properties:
       FunctionName: TestAuthFunction
       CodeUri: src/
-      Handler: test_auth.lambda_handler
+      Handler: auth.test_auth.lambda_handler
       Runtime: python3.12
       Architectures:
         - x86_64
       Role: !GetAtt TestAuthExecutionRole.Arn
       Events:
-        AuthAPI:
+        TestAuthAPI:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
             Path: /test_auth
             Method: GET
 
-  CreateEventFunction:
+  CreateActivityFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: 'CreateEventFunction'
+      FunctionName: 'CreateActivityFunction'
       CodeUri: src/
-      Handler: create_event.lambda_handler
+      Handler: activity.create_activity.lambda_handler
       Runtime: python3.12
       Architectures:
         - x86_64
-      Role: !GetAtt CreateEventExecutionRole.Arn
+      Role: !GetAtt CreateActivityExecutionRole.Arn
+      Events:
+        CreateActivityAPI:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyRestApi
+            Path: /activity/create
+            Method: POST
+
+  UpdateActivityFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: UpdateActivityFunction
+      CodeUri: src/
+      Handler: activity.update_activity.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Role: !GetAtt UpdateActivityExecutionRole.Arn
+      Events:
+        UpdateActivityAPI:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyRestApi
+            Path: /activity/update
+            Method: POST
+
+  DeleteActivityFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 'DeleteActivityFunction'
+      CodeUri: src/
+      Handler: activity.delete_activity.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Role: !GetAtt DeleteActivityExecutionRole.Arn
+      Events:
+        DeleteActivityAPI:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyRestApi
+            Path: /activity/delete
+            Method: DELETE
+
+  GetActivityFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GetActivityFunction
+      CodeUri: src/
+      Handler: activity.get_activity.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Role: !GetAtt GetActivityExecutionRole.Arn
+      Events:
+        GetActivityAPI:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyRestApi
+            Path: /activity/{activity_id}
+            Method: GET
+
+  CreatePlanFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 'CreatePlanFunction'
+      CodeUri: src/
+      Handler: plan.create_plan.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Role: !GetAtt CreatePlanExecutionRole.Arn
+      Events:
+        CreatePlanAPI:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyRestApi
+            Path: /plan/create
+            Method: POST
+
+  UpdatePlanFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 'UpdatePlanFunction'
+      CodeUri: src/
+      Handler: plan.update_plan.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Role: !GetAtt UpdatePlanExecutionRole.Arn
+      Events:
+        UpdatePlanAPI:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyRestApi
+            Path: /plan/update
+            Method: POST
+
+  DeletePlanFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 'DeletePlanFunction'
+      CodeUri: src/
+      Handler: plan.delete_plan.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Role: !GetAtt DeletePlanExecutionRole.Arn
+      Events:
+        DeletePlanAPI:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyRestApi
+            Path: /plan/delete
+            Method: DELETE
+
+  GetPlansFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 'GetPlansFunction'
+      CodeUri: src/
+      Handler: plan.get_plans.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Role: !GetAtt GetPlansExecutionRole.Arn
       Events:
         CreateEventAPI:
           Type: Api
           Properties:
             RestApiId: !Ref MyRestApi
-            Path: /create_event
-            Method: POST
+            Path: /plan/get
+            Method: GET
 
+  GetPlanFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 'GetPlanFunction'
+      CodeUri: src/
+      Handler: plan.get_plan.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Role: !GetAtt GetPlanExecutionRole.Arn
+      Events:
+        GetPlanAPI:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyRestApi
+            Path: /plan/get/{plan_id}
+            Method: GET
 
   MyRestApi:
     Type: AWS::Serverless::Api
@@ -117,7 +260,7 @@ Resources:
         AllowHeaders: "'*'"
         AllowOrigin: "'*'"
 
-  CreateEventExecutionRole:
+  DeletePlanExecutionRole:
     Type: 'AWS::IAM::Role'
     Properties:
       AssumeRolePolicyDocument:
@@ -137,7 +280,7 @@ Resources:
                   - 'logs:CreateLogGroup'
                   - 'logs:CreateLogStream'
                   - 'logs:PutLogEvents'
-                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/CreateEventFunction:*'
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/DeletePlanFunction:*'
 
         - PolicyName: 'SecretsManagerAccessPolicy'
           PolicyDocument:
@@ -147,6 +290,258 @@ Resources:
                 Action:
                   - 'secretsmanager:GetSecretValue'
                 Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:mongo-db-connection-secret-lzoiPy'
+
+
+  UpdatePlanExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'CloudWatchLogPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/UpdatePlanFunction:*'
+
+        - PolicyName: 'SecretsManagerAccessPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:mongo-db-connection-secret-lzoiPy'
+
+  GetPlanExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'CloudWatchLogPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/GetPlanFunction:*'
+
+        - PolicyName: 'SecretsManagerAccessPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:mongo-db-connection-secret-lzoiPy'
+
+  GetPlansExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'CloudWatchLogPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/GetPlansFunction:*'
+
+        - PolicyName: 'SecretsManagerAccessPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:mongo-db-connection-secret-lzoiPy'
+
+
+  CreatePlanExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'CloudWatchLogPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/CreatePlanFunction:*'
+
+        - PolicyName: 'SecretsManagerAccessPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:mongo-db-connection-secret-lzoiPy'
+
+  GetActivityExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'CloudWatchLogPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/GetActivityFunction:*'
+
+        - PolicyName: 'SecretsManagerAccessPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:mongo-db-connection-secret-lzoiPy'
+
+  UpdateActivityExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'CloudWatchLogPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/UpdateActivityFunction:*'
+
+        - PolicyName: 'SecretsManagerAccessPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:mongo-db-connection-secret-lzoiPy'
+
+
+  CreateActivityExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'CloudWatchLogPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/CreateActivityFunction:*'
+
+        - PolicyName: 'SecretsManagerAccessPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:mongo-db-connection-secret-lzoiPy'
+
+  DeleteActivityExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'CloudWatchLogPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/DeleteActivityFunction:*'
+
+        - PolicyName: 'SecretsManagerAccessPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:mongo-db-connection-secret-lzoiPy'
+
 
   TestAuthExecutionRole:
     Type: 'AWS::IAM::Role'

@@ -1,0 +1,747 @@
+openapi: 3.0.0
+info:
+  title: Planify API
+  version: 1.0.0
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /google/auth:
+    post:
+      operationId: googleAuth
+      summary: Sign in/up with Google
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_token:
+                  type: string
+                  description: ID token provided by Google
+                client_type:
+                  type: string
+                  description: Can be "web" or "ios"
+            examples:
+              example:
+                value:
+                  id_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                  client_type: web
+      responses:
+        200:
+          description: OK. JWT tokens header can be decoded into [alg, exp, type]. JWT tokens payload can be decoded into [email, picture, name].
+          content:
+            application/json:
+              examples:
+                signInSuccess:
+                  value:
+                      jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOsIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjzxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJi_adQssw5c
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              examples:
+                invalidIdToken:
+                  value:
+                      message: Invalid ID token
+                invalidClientType:
+                  value:
+                      message: Invalid client type
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              examples:
+                invalidRequestBody:
+                  value:
+                      message: Request body is an invalid JSON
+                missingFields:
+                  value:
+                      message: "The following fields are missing in body: [missing fields]"
+
+  /signin:
+    post:
+      operationId: passwordSignin
+      summary: Sign in with password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: User email
+                password:
+                  type: string
+                  description: User password
+            examples:
+              example:
+                value:
+                  email: willy3124@email.com
+                  password: this is secure
+      responses:
+        200:
+          description: OK. JWT tokens header can be decoded into [alg, exp, type]. JWT tokens payload can be decoded into [email, picture, name].
+          content:
+            application/json:
+              examples:
+                signInSuccess:
+                  value:
+                      jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOsIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjzxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJi_adQssw5c
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              examples:
+                userDoesNotExist:
+                  value:
+                      message: User doesn't exist or password incorrect
+                passwordIncorrect:
+                  value:
+                      message: User doesn't exist or password incorrect
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              examples:
+                invalidRequestBody:
+                  value:
+                      message: Request body is an invalid JSON
+                missingFields:
+                  value:
+                      message: "The following fields are missing in body: {missing fields}"
+
+  /signup:
+    post:
+      operationId: passwordSignup
+      summary: Sign up with password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: User email
+                password:
+                  type: string
+                  description: User password
+                first_name:
+                  type: string
+                  description: User first name
+                last_name:
+                  type: string
+                  description: User last name
+            examples:
+              example:
+                value:
+                  email: willy3124@email.com
+                  password: this is secure
+                  first_name: Willy
+                  last_name: Lien
+      responses:
+        200:
+          description: OK. JWT tokens header can be decoded into [alg, exp, type]. JWT tokens payload can be decoded into [email, picture, name].
+          content:
+            application/json:
+              examples:
+                signUpSuccess:
+                  value:
+                      jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOsIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjzxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJi_adQssw5c
+        409:
+          description: Conflict.
+          content:
+            application/json:
+              examples:
+                emailAlreadyUsed:
+                  value:
+                      message: Email already used
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              examples:
+                invalidRequestBody:
+                  value:
+                      message: Request body is an invalid JSON
+                missingFields:
+                  value:
+                      message: "The following fields are missing in body: {missing fields}"
+
+  /test_auth:
+    get:
+      operationId: testAuth
+      summary: Check whether the current user is signed in
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              examples:
+                userSignedIn:
+                  value:
+                      message: You are authorized
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              examples:
+                userNotSignedIn:
+                  value:
+                      message: You are not authorized
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              examples:
+                missingHeader:
+                  value:
+                      message: "The following fields are missing in header: {missing_keys}"
+
+  /plan/create:
+    post:
+      operationId: createPlan
+      summary: Create plan
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Plan name
+                date:
+                  type: string
+                  description: Plan date in the format MM/DD/YY
+            examples:
+              example:
+                value:
+                  name: very fun plan
+                  date: 06/15/2024
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              examples:
+                planCreated:
+                  value:
+                    plan_id: 6688693729a03432a97f4180
+                    name: very fun plan
+                    date: 06/15/2024
+                    owner: 66886919b80970c71c3d5f4b
+                    members: [66886919b80970c71c3d5f4b]
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              examples:
+                invalidRequestBody:
+                  value:
+                      message: Request body is an invalid JSON
+                missingFields:
+                  value:
+                      message: "The following fields are missing in body: {missing fields}"
+                missingHeader:
+                  value:
+                      message: "The following fields are missing in header: {missing_keys}"
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              examples:
+                userNotSignedIn:
+                  value:
+                      message: You are not signed in
+
+  /plan/update:
+    post:
+      operationId: updatePlan
+      summary: Update plan
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                plan_id:
+                  type: string
+                  description: Plan ID
+                name:
+                  type: string
+                  description: Plan name
+                date:
+                  type: string
+                  description: Plan date in the format MM/DD/YY
+                owner:
+                  type: string
+                  description: Owner ID
+                members:
+                  type: array
+                  items:
+                    type: string
+                  description: List of members' IDs
+                activities:
+                  type: array
+                  items:
+                    type: string
+                  description: List of activities' IDs
+            examples:
+              example:
+                value:
+                  plan_id: 6688693729a03432a97f4180
+                  name: very fun plan
+                  date: 06/15/2024
+                  owner: 66886919b80970c71c3d5f4b
+                  members: [66886919b80970c71c3d5f4b, 66886919b80970c71c3d5f4c]
+                  activities: [66886919b80970c71c3d5f4d, 66886919b80970c71c3d5f4e]
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              examples:
+                planUpdated:
+                  value:
+                    plan_id: 6688693729a03432a97f4180
+                    name: very fun plan
+                    date: 06/15/2024
+                    owner: 66886919b80970c71c3d5f4b
+                    members: [66886919b80970c71c3d5f4b, 66886919b80970c71c3d5f4c]
+                    activities: [66886919b80970c71c3d5f4d, 66886919b80970c71c3d5f4e]
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              examples:
+                invalidRequestBody:
+                  value:
+                      message: Request body is an invalid JSON
+                missingFields:
+                  value:
+                      message: "The following fields are missing in body: {missing fields}"
+                missingHeader:
+                  value:
+                      message: "The following fields are missing in header: {missing_keys}"
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              examples:
+                userNotSignedIn:
+                  value:
+                      message: You are not signed in
+
+  /plan/delete:
+    delete:
+      operationId: deletePlan
+      summary: Delete plan
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                plan_id:
+                  type: string
+                  description: Plan ID
+            examples:
+              example:
+                value:
+                  plan_id: 6688693729a03432a97f4180
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              examples:
+                planDeleted:
+                  value:
+                      plan_id: 6688693729a03432a97f4180
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              examples:
+                invalidRequestBody:
+                  value:
+                      message: Request body is an invalid JSON
+                missingFields:
+                  value:
+                      message: "The following fields are missing in body: {missing fields}"
+                missingHeader:
+                  value:
+                      message: "The following fields are missing in header: {missing_keys}"
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              examples:
+                userNotSignedIn:
+                  value:
+                      message: You are not signed in
+
+  /plan:
+    get:
+      operationId: getPlans
+      summary: Get all plans associated to the current user
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              examples:
+                plansFound:
+                  value:
+                    - plan_id: 6688693729a03432a97f4180
+                      name: first plan
+                      date: 06/15/2024
+                      owner: 66886919b80970c71c3d5f4b
+                      members: [66886919b80970c71c3d5f4b]
+                    - plan_id: 6688693729a03432a97f4196
+                      name: second plan
+                      date: 06/16/2024
+                      owner: 66886919b80970c71c3d5f4b
+                      members: [66886919b80970c71c3d5f4b]
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              examples:
+                missingHeader:
+                  value:
+                      message: "The following fields are missing in header: {missing_keys}"
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              examples:
+                userNotSignedIn:
+                  value:
+                      message: You are not signed in
+
+  /plan/{plan_id}:
+    get:
+      operationId: getPlan
+      summary: Get plan by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: plan_id
+          schema:
+            type: string
+          required: true
+          description: Plan ID
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              examples:
+                planFound:
+                  value:
+                    plan_id: 6688693729a03432a97f4180
+                    name: very fun plan
+                    date: 06/15/2024
+                    owner:
+                      first_name: steve
+                      last_name: bob
+                      email: steve.bob@gmail.com
+                      picture: steve.bob.png
+                    members:
+                      - first_name: steve
+                        last_name: bob
+                        email: steve.bob@gmail.com
+                        picture: steve.bob.png
+                      - first_name: willy
+                        last_name: lien
+                        email: willy.lien@gmail.com
+                        picture: willy.lien.png
+                    activities:
+                      - activity_id: 668aafd53ad15e037cec6f51
+                        name: willy activity
+                        location: here
+                        start_time: 09/20/22 13:55:26
+                        end_time: 09/20/22 15:35:12
+                        note: fantastic note
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              examples:
+                missingPathParameter:
+                  value:
+                      message: "Missing required path parameter: {missing_parameter}"
+                missingHeader:
+                  value:
+                      message: "The following fields are missing in header: {missing_keys}"
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              examples:
+                userNotSignedIn:
+                  value:
+                      message: You are not signed in
+
+  /activity/create:
+    post:
+      operationId: createActivity
+      summary: Create activity
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Activity name
+                location:
+                  type: string
+                  description: Activity location
+                start_time:
+                  type: string
+                  description: Start time in the format HH:MM
+                end_time:
+                  type: string
+                  description: End time in the format HH:MM
+            examples:
+              example:
+                value:
+                  name: hiking
+                  location: Yosemite
+                  start_time: 09:00
+                  end_time: 15:00
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              examples:
+                activityCreated:
+                  value:
+                    activity_id: 6688693729a03432a97f4180
+                    name: hiking
+                    location: Yosemite
+                    start_time: 09:00
+                    end_time: 15:00
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              examples:
+                invalidRequestBody:
+                  value:
+                      message: Request body is an invalid JSON
+                missingFields:
+                  value:
+                      message: "The following fields are missing in body: {missing fields}"
+                missingHeader:
+                  value:
+                      message: "The following fields are missing in header: {missing_keys}"
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              examples:
+                userNotSignedIn:
+                  value:
+                      message: You are not signed in
+
+  /activity/update:
+    post:
+      operationId: updateActivity
+      summary: Update activity
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                activity_id:
+                  type: string
+                  description: Activity ID
+                name:
+                  type: string
+                  description: Activity name
+                location:
+                  type: string
+                  description: Activity location
+                note:
+                  type: string
+                  description: Activity note
+                start_time:
+                  type: string
+                  description: Start time in the format MM/DD/YY HH:MM:SS
+                end_time:
+                  type: string
+                  description: End time in the format MM/DD/YY HH:MM:SS
+            examples:
+              example:
+                value:
+                  activity_id: 6688693729a03432a97f4180
+                  name: hiking
+                  location: Yosemite
+                  start_time: 06/15/2024 09:00:00
+                  end_time: 06/15/2024 15:00:00
+                  note: It's gonna be very hot
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              examples:
+                activityUpdated:
+                  value:
+                    activity_id: 6688693729a03432a97f4180
+                    plan_id: 6688693729a03432a97f4196
+                    name: hiking
+                    location: Yosemite
+                    start_time: 06/15/2024 09:00:00
+                    end_time: 06/15/2024 15:00:00
+                    note: It's gonna be very hot
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              examples:
+                invalidRequestBody:
+                  value:
+                      message: Request body is an invalid JSON
+                missingFields:
+                  value:
+                      message: "The following fields are missing in body: {missing fields}"
+                missingHeader:
+                  value:
+                      message: "The following fields are missing in header: {missing_keys}"
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              examples:
+                userNotSignedIn:
+                  value:
+                      message: You are not signed in
+
+  /activity/delete:
+    delete:
+      operationId: deleteActivity
+      summary: Delete activity
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                activity_id:
+                  type: string
+                  description: Activity ID
+            examples:
+              example:
+                value:
+                  activity_id: 6688693729a03432a97f4180
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              examples:
+                activityDeleted:
+                  value:
+                      activity_id: 6688693729a03432a97f4180
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              examples:
+                invalidRequestBody:
+                  value:
+                      message: Request body is an invalid JSON
+                missingFields:
+                  value:
+                      message: "The following fields are missing in body: {missing fields}"
+                missingHeader:
+                  value:
+                      message: "The following fields are missing in header: {missing_keys}"
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              examples:
+                userNotSignedIn:
+                  value:
+                      message: You are not signed in
+
+  /activity/{activity_id}:
+    get:
+      operationId: getActivity
+      summary: Get activity by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: activity_id
+          schema:
+            type: string
+          required: true
+          description: Activity ID
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              examples:
+                planFound:
+                  value:
+                    activity_id: 6688693729a03432a97f4180
+                    plan_id: 6688693729a03432a97f4196
+                    name: hiking
+                    location: Yosemite
+                    start_time: 06/15/2024 09:00:00
+                    end_time: 06/15/2024 15:00:00
+                    note: It's gonna be very hot
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              examples:
+                missingPathParameter:
+                  value:
+                      message: "Missing required path parameter: {missing_parameter}"
+                missingHeader:
+                  value:
+                      message: "The following fields are missing in header: {missing_keys}"
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              examples:
+                userNotSignedIn:
+                  value:
+                      message: You are not signed in

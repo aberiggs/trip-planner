@@ -1,10 +1,12 @@
 """Module providing mongodb client and session fixtures for integration tests"""
 
+from unittest.mock import patch
 import pytest
 import pymongo
 from planner.util.get_secret import get_secret
-from planner.db.user_schema import enforce_user_schema
-from planner.db.create_collection import create_collection
+from planner.db.repo.user_repo import UserRepo
+from planner.db.repo.plan_repo import PlanRepo
+from planner.db.repo.activity_repo import ActivityRepo
 
 @pytest.fixture(scope="session")
 def client():
@@ -14,9 +16,6 @@ def client():
         "mongo-db-connection-secret", "mongo_db_connect_url"
     )
     client = pymongo.MongoClient(mongo_db_connect_url)
-
-    create_collection(client.trip_planner, "users")
-    enforce_user_schema(client.trip_planner)
 
     assert (
         client.admin.command("ping")["ok"] != 0.0
@@ -35,3 +34,41 @@ def rollback_session(client):
         yield session
     finally:
         session.abort_transaction()
+
+
+@pytest.fixture()
+def user_repo(client, rollback_session):
+    """Function providing fixture to use user repo"""
+
+    return UserRepo(client.trip_planner, rollback_session)
+
+
+@pytest.fixture()
+def plan_repo(client, rollback_session):
+    """Function providing fixture to use user repo"""
+
+    return PlanRepo(client.trip_planner, rollback_session)
+
+
+@pytest.fixture()
+def activity_repo(client, rollback_session):
+    """Function providing fixture to use user repo"""
+
+    return ActivityRepo(client.trip_planner, rollback_session)
+
+
+@pytest.fixture
+def patch_get_session_repos(user_repo, plan_repo, activity_repo):
+    """Function that provides fixture to patch get_session_repos so that transactions
+    are properly rolled back at the end of the test"""
+
+    with patch(
+        "planner.db.repo.get_session_repos.get_session_repos",
+        return_value={
+            "user": user_repo,
+            "plan": plan_repo,
+            "activity": activity_repo
+        },
+        autospec=True,
+    ) as m:
+        yield m

@@ -14,6 +14,13 @@ copy_to_requirement() {
     fi
 }
 
+run_install() {
+    poetry install
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
+}
+
 run_test() {
     poetry run pytest -s tests
     if [ $? -ne 0 ]; then
@@ -94,8 +101,13 @@ case $ACTION in
         echo "Formatting..."
         run_format
         ;;
+    install)
+        echo "Installing..."
+        run_install
+        ;;
     test)
         echo "Testing project..."
+        run_install
         run_test
         ;;
     build)
