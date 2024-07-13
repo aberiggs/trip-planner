@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { saveItem, getItem, removeItem } from "@/utils/async-store";
 import { getSecret, saveSecret, removeSecret } from "@/utils/secure-store";
+import { Link } from "expo-router";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -116,6 +117,7 @@ export default function Index() {
         onPress={() => deleteLocalStorage()}
       />
       <Button title="test login" onPress={() => testLogin()} />
+      <Link href="/index">go back</Link>
     </View>
   );
 }
