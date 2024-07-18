@@ -19,6 +19,12 @@
    ```
 
 3. Start the app
+
    ```bash
    npx expo run:ios
+   ```
+
+4. Run formatter and linter
+   ```bash
+   npm run lint
    ```
