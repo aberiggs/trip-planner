@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 
 import { StyleSheet } from "react-native"
 import { ThemedView } from "@/components/ThemedView"
@@ -10,8 +10,46 @@ import { ColorTypes } from "@/constants/Colors"
 import { Link } from "expo-router"
 import { ThemedInput } from "@/components/ThemedInput"
 import { ThemedBoxShadow } from "@/components/ThemedBoxShadow"
+import { jwtDecode } from "jwt-decode"
+import { saveItem } from "@/utils/async-store"
+import { saveSecret } from "@/utils/secure-store"
+import { useRouter } from "expo-router"
+
+interface User {
+  email: string
+  picture: string
+  name: string
+}
 
 export default function Login() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const router = useRouter()
+
+  async function submit() {
+    console.log(email)
+    console.log(password)
+    const response = await fetch(
+      `${process.env.EXPO_PUBLIC_BACKEND_URL}/signin`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    const data = await response.json()
+    const jwtToken = data["jwt"]
+    const user = jwtDecode<User>(jwtToken)
+    await saveItem("user", JSON.stringify(user))
+    await saveSecret("jwt", jwtToken)
+    router.replace("/")
+  }
+
   return (
     <>
       <ThemedView style={styles.mainContainer}>
@@ -32,6 +70,8 @@ export default function Login() {
               <ThemedInput
                 placeholder="Enter your email"
                 keyboardType="email-address"
+                onChangeText={(email) => setEmail(email)}
+                defaultValue={email}
               />
             </ThemedBoxShadow>
             <ThemedView>
@@ -42,6 +82,8 @@ export default function Login() {
                 <ThemedInput
                   placeholder="Enter your password"
                   secureTextEntry={true}
+                  onChangeText={(password) => setPassword(password)}
+                  defaultValue={password}
                 />
               </ThemedBoxShadow>
               <ThemedView style={styles.forgotPasswordContainer}>
@@ -53,11 +95,11 @@ export default function Login() {
               </ThemedView>
             </ThemedView>
             <ThemedBoxShadow>
-              <Link replace style={[styles.loginButton]} href="" asChild>
-                <ThemedButton color={ColorTypes.primary}>
-                  <ThemedText color={ColorTypes.base}>Log in</ThemedText>
-                </ThemedButton>
-              </Link>
+              {/* <Link replace style={[styles.loginButton]} href="" asChild> */}
+              <ThemedButton color={ColorTypes.primary} onPress={() => submit()}>
+                <ThemedText color={ColorTypes.base}>Log in</ThemedText>
+              </ThemedButton>
+              {/* </Link> */}
             </ThemedBoxShadow>
           </ThemedView>
           <ThemedView style={styles.separatorContainer}>
