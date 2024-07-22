@@ -26,6 +26,7 @@ export default function Landing() {
         </ThemedText>
         <Link href="/login">Login Page</Link>
         <Link href={"(tabs)/plans"}>go to tabs</Link>
+        <Link href={"/create_activity"}>go to create activity</Link>
       </ThemedView>
     </ThemedView>
   )
